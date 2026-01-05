@@ -1,0 +1,418 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600;700&family=Space+Grotesk:wght@300;400;500;600;700&display=swap');
+
+@layer base {
+  :root {
+    --background: 260 20% 6%;
+    --foreground: 270 20% 95%;
+
+    --card: 260 25% 10%;
+    --card-foreground: 270 20% 95%;
+
+    --popover: 260 25% 10%;
+    --popover-foreground: 270 20% 95%;
+
+    --primary: 270 70% 65%;
+    --primary-foreground: 260 20% 6%;
+
+    --secondary: 260 20% 14%;
+    --secondary-foreground: 270 20% 85%;
+
+    --muted: 260 20% 16%;
+    --muted-foreground: 270 15% 55%;
+
+    --accent: 280 60% 60%;
+    --accent-foreground: 260 20% 6%;
+
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 270 20% 98%;
+
+    --success: 145 60% 45%;
+    --success-foreground: 260 20% 6%;
+
+    --warning: 38 92% 50%;
+    --warning-foreground: 260 20% 6%;
+
+    --border: 270 20% 18%;
+    --input: 260 20% 14%;
+    --ring: 270 70% 65%;
+
+    --radius: 0.75rem;
+
+    /* Glass LM crystal theme */
+    --glass-glow: 270 80% 60%;
+    --glass-glow-secondary: 300 70% 55%;
+    --glass-surface: 260 30% 10%;
+    --glass-border: 270 30% 25%;
+    --glass-highlight: 270 100% 85%;
+
+    --chunk-approved: 145 60% 45%;
+    --chunk-pending: 38 92% 50%;
+    --chunk-masked: 280 60% 55%;
+    --diff-added: 145 60% 35%;
+    --diff-removed: 0 60% 35%;
+
+    --sidebar-background: 260 25% 10%;
+    --sidebar-foreground: 270 20% 85%;
+    --sidebar-primary: 270 70% 65%;
+    --sidebar-primary-foreground: 260 20% 6%;
+    --sidebar-accent: 260 20% 16%;
+    --sidebar-accent-foreground: 270 20% 85%;
+    --sidebar-border: 270 20% 18%;
+    --sidebar-ring: 270 70% 65%;
+  }
+
+  .dark {
+    --background: 260 20% 6%;
+    --foreground: 270 20% 95%;
+    --card: 260 25% 10%;
+    --card-foreground: 270 20% 95%;
+    --popover: 260 25% 10%;
+    --popover-foreground: 270 20% 95%;
+    --primary: 270 70% 65%;
+    --primary-foreground: 260 20% 6%;
+    --secondary: 260 20% 14%;
+    --secondary-foreground: 270 20% 85%;
+    --muted: 260 20% 16%;
+    --muted-foreground: 270 15% 55%;
+    --accent: 280 60% 60%;
+    --accent-foreground: 260 20% 6%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 270 20% 98%;
+    --border: 270 20% 18%;
+    --input: 260 20% 14%;
+    --ring: 270 70% 65%;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground antialiased;
+    font-family: 'Space Grotesk', sans-serif;
+  }
+
+  .font-mono {
+    font-family: 'JetBrains Mono', monospace;
+  }
+}
+
+@layer components {
+  .glass-surface {
+    @apply bg-card/60 border border-border/50 backdrop-blur-xl;
+    background: linear-gradient(135deg,
+        hsl(260 30% 12% / 0.8) 0%,
+        hsl(270 25% 8% / 0.9) 100%);
+  }
+
+  .glass-card {
+    @apply relative overflow-hidden rounded-2xl;
+    background: linear-gradient(145deg,
+        hsl(270 30% 15% / 0.5) 0%,
+        hsl(260 25% 10% / 0.6) 50%,
+        hsl(280 30% 12% / 0.4) 100%);
+    border: 1px solid hsl(270 40% 30% / 0.3);
+    backdrop-filter: blur(20px);
+    box-shadow:
+      0 8px 32px hsl(270 80% 30% / 0.15),
+      inset 0 1px 0 hsl(270 100% 85% / 0.1);
+  }
+
+  .glass-card::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg,
+        hsl(270 100% 85% / 0.05) 0%,
+        transparent 50%);
+    pointer-events: none;
+  }
+
+  .glass-glow {
+    box-shadow:
+      0 0 40px -10px hsl(var(--glass-glow) / 0.4),
+      0 0 80px -20px hsl(var(--glass-glow-secondary) / 0.3);
+  }
+
+  .glass-border {
+    border: 1px solid;
+    border-image: linear-gradient(135deg,
+        hsl(270 60% 60% / 0.4) 0%,
+        hsl(300 50% 50% / 0.2) 50%,
+        hsl(270 60% 60% / 0.4) 100%) 1;
+  }
+
+  .crystal-gradient {
+    background: linear-gradient(135deg,
+        hsl(270 70% 65%) 0%,
+        hsl(290 60% 55%) 50%,
+        hsl(270 70% 65%) 100%);
+  }
+
+  .text-crystal {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg,
+        hsl(270 80% 75%) 0%,
+        hsl(300 70% 70%) 50%,
+        hsl(270 80% 75%) 100%);
+  }
+
+  .status-online {
+    @apply relative;
+  }
+
+  .status-online::before {
+    content: '';
+    @apply absolute w-2 h-2 rounded-full animate-pulse;
+    background: hsl(var(--primary));
+    left: -16px;
+    top: 50%;
+    transform: translateY(-50%);
+  }
+
+  .chunk-card {
+    @apply glass-card rounded-xl p-4 transition-all duration-300;
+  }
+
+  .chunk-card:hover {
+    box-shadow:
+      0 0 30px -10px hsl(var(--primary) / 0.4),
+      inset 0 1px 0 hsl(270 100% 85% / 0.15);
+  }
+
+  .chunk-approved {
+    @apply border-l-4;
+    border-left-color: hsl(var(--chunk-approved));
+  }
+
+  .chunk-masked {
+    @apply border-l-4;
+    border-left-color: hsl(var(--chunk-masked));
+  }
+
+  .text-gradient {
+    @apply bg-clip-text text-transparent;
+    background-image: linear-gradient(135deg, hsl(var(--foreground)), hsl(var(--muted-foreground)));
+  }
+
+  .nav-link {
+    @apply uppercase tracking-widest text-xs font-medium text-muted-foreground transition-colors duration-200;
+  }
+
+  .nav-link:hover,
+  .nav-link.active {
+    @apply text-primary;
+  }
+
+  .section-label {
+    @apply uppercase tracking-widest text-xs font-medium text-muted-foreground;
+  }
+
+  .mono-text {
+    @apply font-mono text-sm;
+  }
+
+  .diff-added {
+    @apply bg-green-500/20 text-green-400;
+  }
+
+  .diff-removed {
+    @apply bg-red-500/20 text-red-400 line-through;
+  }
+
+  .input-glass {
+    @apply bg-card/40 border border-border/50 backdrop-blur-sm rounded-xl;
+    background: linear-gradient(135deg,
+        hsl(260 25% 12% / 0.6) 0%,
+        hsl(270 20% 10% / 0.8) 100%);
+  }
+
+  .btn-crystal {
+    @apply relative overflow-hidden;
+    background: linear-gradient(135deg,
+        hsl(270 70% 55%) 0%,
+        hsl(285 60% 50%) 50%,
+        hsl(270 70% 55%) 100%);
+    box-shadow:
+      0 4px 20px hsl(270 80% 50% / 0.4),
+      inset 0 1px 0 hsl(270 100% 85% / 0.3);
+    transition: all 0.3s ease;
+  }
+
+  .btn-crystal:hover {
+    box-shadow:
+      0 6px 30px hsl(270 80% 50% / 0.5),
+      inset 0 1px 0 hsl(270 100% 85% / 0.4);
+    transform: translateY(-1px);
+  }
+}
+
+@layer utilities {
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
+
+  .animate-fade-in {
+    animation: fadeIn 0.5s ease-out;
+  }
+
+  @keyframes fadeIn {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-slide-up {
+    animation: slideUp 0.4s ease-out;
+  }
+
+  @keyframes slideUp {
+    from {
+      opacity: 0;
+      transform: translateY(20px);
+    }
+
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  .animate-glow {
+    animation: glow 3s ease-in-out infinite;
+  }
+
+  @keyframes glow {
+
+    0%,
+    100% {
+      box-shadow: 0 0 20px hsl(270 80% 60% / 0.3);
+    }
+
+    50% {
+      box-shadow: 0 0 40px hsl(270 80% 60% / 0.5);
+    }
+  }
+
+  /* Crystal Idle Float Animation - gentle breathing movement */
+  .animate-crystal-float {
+    animation:
+      crystalFloat 6s ease-in-out infinite,
+      crystalRotate 8s ease-in-out infinite,
+      crystalGlow 4s ease-in-out infinite;
+  }
+
+  @keyframes crystalFloat {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-8px);
+    }
+  }
+
+  @keyframes crystalRotate {
+
+    0%,
+    100% {
+      transform: translateY(0) rotate(-2deg);
+    }
+
+    25% {
+      transform: translateY(-4px) rotate(0deg);
+    }
+
+    50% {
+      transform: translateY(-8px) rotate(2deg);
+    }
+
+    75% {
+      transform: translateY(-4px) rotate(0deg);
+    }
+  }
+
+  @keyframes crystalGlow {
+
+    0%,
+    100% {
+      filter: drop-shadow(0 0 15px hsl(270 80% 60% / 0.4));
+    }
+
+    50% {
+      filter: drop-shadow(0 0 25px hsl(270 80% 60% / 0.7));
+    }
+  }
+
+  /* Crystal Hover - gentle breathing rotation like heartbeat */
+  .crystal-breathe:hover img {
+    animation: crystalBreathe 4s ease-in-out infinite;
+  }
+
+  @keyframes crystalBreathe {
+
+    0%,
+    100% {
+      transform: rotate(-3deg) scale(1);
+    }
+
+    25% {
+      transform: rotate(0deg) scale(1.02);
+    }
+
+    50% {
+      transform: rotate(3deg) scale(1);
+    }
+
+    75% {
+      transform: rotate(0deg) scale(1.02);
+    }
+  }
+
+  .animate-float {
+    animation: float 6s ease-in-out infinite;
+  }
+
+  @keyframes float {
+
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+
+    50% {
+      transform: translateY(-10px);
+    }
+  }
+
+  /* AI Provider Logo Grayscale Effect */
+  .group:not(:has(.border-primary)) .provider-logo-grayscale {
+    filter: grayscale(100%) brightness(0.7);
+    opacity: 0.4;
+    transition: filter 0.3s ease, opacity 0.3s ease;
+  }
+
+  .group:hover .provider-logo-grayscale {
+    filter: none;
+    opacity: 1;
+  }
+}
