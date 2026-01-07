@@ -13,6 +13,7 @@ import { ChatInput } from '@/components/glass/ChatInput';
 import { WelcomeScreen } from '@/components/glass/WelcomeScreen';
 import { NetworkInspector } from '@/components/glass/NetworkInspector';
 import { AIProviderModal } from '@/components/glass/AIProviderModal';
+import { MobileMenuDrawer } from '@/components/glass/MobileMenuDrawer';
 
 // Store leakage warnings per message
 type MessageLeakageMap = Record<string, LeakageWarning[]>;
@@ -24,14 +25,15 @@ const Index = () => {
   const [messageLeakage, setMessageLeakage] = useState<MessageLeakageMap>({});
   const [maskingRules, setMaskingRules] = useState<MaskingRules>(DEFAULT_MASKING_RULES);
   const messagesEndRef = useRef<HTMLDivElement>(null);
-  
+
   // Session-level storage for masked items (for unmasking AI responses)
   const [sessionMaskedItems, setSessionMaskedItems] = useState<MaskedItem[]>([]);
-  
+
   // AI Provider state (kept in memory only - cleared on tab close)
   const [connectedProviders, setConnectedProviders] = useState<ConnectedProvider[]>([]);
   const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null);
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -55,7 +57,7 @@ const Index = () => {
   const handleDisconnectProvider = (providerId: string) => {
     setConnectedProviders(prev => prev.filter(p => p.providerId !== providerId));
     if (selectedProviderId === providerId) {
-      setSelectedProviderId(connectedProviders.length > 1 
+      setSelectedProviderId(connectedProviders.length > 1
         ? connectedProviders.find(p => p.providerId !== providerId)?.providerId ?? null
         : null
       );
@@ -65,7 +67,7 @@ const Index = () => {
   const handleSend = async (content: string, providerId: string) => {
     // Step 1: Auto-mask the user's message
     const { maskedText, maskedItems } = autoMask(content);
-    
+
     // Create user message
     const userMessage: ChatMessageType = {
       id: `msg_${Date.now()}`,
@@ -75,10 +77,10 @@ const Index = () => {
       maskedItems,
       timestamp: new Date(),
     };
-    
+
     setMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
-    
+
     // Add loading message
     const loadingMessage: ChatMessageType = {
       id: `msg_${Date.now()}_loading`,
@@ -89,10 +91,10 @@ const Index = () => {
       isLoading: true,
     };
     setMessages(prev => [...prev, loadingMessage]);
-    
+
     const provider = AI_PROVIDERS.find(p => p.id === providerId);
     const connectedProvider = connectedProviders.find(p => p.providerId === providerId);
-    
+
     if (!connectedProvider) {
       setMessages(prev => {
         const withoutLoading = prev.filter(m => m.id !== loadingMessage.id);
@@ -107,7 +109,7 @@ const Index = () => {
       setIsLoading(false);
       return;
     }
-    
+
     // Build conversation history with masked content
     const conversationHistory = messages
       .filter(m => !m.isLoading)
@@ -115,15 +117,15 @@ const Index = () => {
         role: m.role,
         content: m.role === 'user' ? (m.maskedContent || m.content) : m.content
       }));
-    
+
     // Add current masked message
     conversationHistory.push({ role: 'user', content: maskedText });
-    
+
     // Determine API endpoint and headers based on provider
     let apiUrl = '';
     let headers: Record<string, string> = {};
     let body: any = {};
-    
+
     switch (providerId) {
       case 'openai':
         apiUrl = 'https://api.openai.com/v1/chat/completions';
@@ -203,7 +205,7 @@ const Index = () => {
       default:
         throw new Error('Unknown provider');
     }
-    
+
     // Log the network request for transparency
     const request: NetworkRequest = {
       id: `req_${Date.now()}`,
@@ -211,33 +213,33 @@ const Index = () => {
       method: 'POST',
       url: apiUrl.split('?')[0], // Don't show API key in URL
       payloadSize: new Blob([JSON.stringify(body)]).size,
-      payloadPreview: JSON.stringify({ 
+      payloadPreview: JSON.stringify({
         message: maskedText.length > 300 ? maskedText.slice(0, 300) + '...' : maskedText,
         note: maskedItems.length > 0 ? `${maskedItems.length} items masked` : 'No sensitive data detected'
       }, null, 2),
       status: 0,
     };
     setNetworkRequests(prev => [...prev, request]);
-    
+
     try {
       const response = await fetch(apiUrl, {
         method: 'POST',
         headers,
         body: JSON.stringify(body),
       });
-      
+
       // Update request status
-      setNetworkRequests(prev => prev.map(r => 
+      setNetworkRequests(prev => prev.map(r =>
         r.id === request.id ? { ...r, status: response.status } : r
       ));
-      
+
       if (!response.ok) {
         const errorText = await response.text();
         throw new Error(`API Error (${response.status}): ${errorText}`);
       }
-      
+
       const data = await response.json();
-      
+
       // Extract response based on provider
       let aiResponseText = '';
       switch (providerId) {
@@ -254,21 +256,21 @@ const Index = () => {
           aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response received';
           break;
       }
-      
+
       // Step 5: Unmask the response locally
       const unmaskedResponse = unmask(aiResponseText, maskedItems);
-      
+
       // Step 6: Check for potential leakage
       const leakageWarnings = detectLeakage(aiResponseText, maskedItems);
       const responseId = `msg_${Date.now()}_response`;
-      
+
       if (leakageWarnings.length > 0) {
         setMessageLeakage(prev => ({
           ...prev,
           [responseId]: leakageWarnings
         }));
       }
-      
+
       // Remove loading message and add real response with masked items for InlineReveal
       setMessages(prev => {
         const withoutLoading = prev.filter(m => m.id !== loadingMessage.id);
@@ -283,13 +285,13 @@ const Index = () => {
       });
     } catch (error) {
       console.error('AI API Error:', error);
-      
+
       // Parse error for user-friendly message
       const errorMessage = error instanceof Error ? error.message : 'Failed to get response from AI';
       let friendlyMessage = '';
-      
+
       const dataNotSent = '\n\n✅ **Your data was not sent.** No information left your browser.';
-      
+
       if (errorMessage.includes('429') || errorMessage.includes('RESOURCE_EXHAUSTED') || errorMessage.includes('quota')) {
         friendlyMessage = `⏳ Rate limit reached for ${provider?.name || 'this provider'}. Please wait a moment and try again, or switch to a different AI provider.${dataNotSent}`;
       } else if (errorMessage.includes('401') || errorMessage.includes('UNAUTHENTICATED') || errorMessage.includes('invalid')) {
@@ -305,7 +307,7 @@ const Index = () => {
       } else {
         friendlyMessage = `Something went wrong with ${provider?.name || 'the AI'}. Please try again or switch providers.${dataNotSent}`;
       }
-      
+
       setMessages(prev => {
         const withoutLoading = prev.filter(m => m.id !== loadingMessage.id);
         return [...withoutLoading, {
@@ -317,19 +319,19 @@ const Index = () => {
         }];
       });
     }
-    
+
     setIsLoading(false);
   };
 
   const handleFileUpload = async (file: File) => {
     // Read file content
     const text = await file.text();
-    
+
     // Create a message showing file was uploaded
     const { maskedText, maskedItems } = autoMask(text);
-    
+
     const fileMessage = `I've uploaded a document: ${file.name}\n\n---\n\n${text}`;
-    
+
     if (selectedProviderId) {
       handleSend(fileMessage, selectedProviderId);
     }
@@ -340,14 +342,15 @@ const Index = () => {
 
   return (
     <div className="min-h-screen bg-background flex flex-col">
-      <ChatHeader 
+      <ChatHeader
         connectedProviders={connectedProviders}
         onConnectAIClick={() => setIsAIModalOpen(true)}
+        onMenuClick={() => setIsMobileMenuOpen(true)}
       />
-      
+
       <main className="flex-1 container mx-auto px-3 md:px-6 pt-16 md:pt-20 pb-32 md:pb-40">
         {!hasMessages ? (
-          <WelcomeScreen 
+          <WelcomeScreen
             hasProviders={hasProviders}
           />
         ) : (
@@ -365,11 +368,11 @@ const Index = () => {
                 New Chat
               </button>
             </div>
-            
+
             {messages.map(message => (
-              <ChatMessage 
-                key={message.id} 
-                message={message} 
+              <ChatMessage
+                key={message.id}
+                message={message}
                 leakageWarnings={messageLeakage[message.id] || []}
               />
             ))}
@@ -377,7 +380,7 @@ const Index = () => {
           </div>
         )}
       </main>
-      
+
       <div className="fixed bottom-10 md:bottom-12 left-0 right-0 px-3 md:px-6 pb-3 md:pb-4">
         <div className="max-w-3xl mx-auto">
           <ChatInput
@@ -393,15 +396,21 @@ const Index = () => {
           />
         </div>
       </div>
-      
+
       <TrustStrip />
-      
+
       <AIProviderModal
         isOpen={isAIModalOpen}
         onClose={() => setIsAIModalOpen(false)}
         connectedProviders={connectedProviders}
         onConnect={handleConnectProvider}
         onDisconnect={handleDisconnectProvider}
+      />
+
+      <MobileMenuDrawer
+        isOpen={isMobileMenuOpen}
+        onClose={() => setIsMobileMenuOpen(false)}
+        onConnectAI={() => setIsAIModalOpen(true)}
       />
     </div>
   );

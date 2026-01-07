@@ -1,4 +1,4 @@
-import { Plus, Cpu, Coffee } from 'lucide-react';
+import { Plus, Cpu, Coffee, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ConnectedProvider } from '@/lib/glass/aiProviders';
 import { Button } from '@/components/ui/button';
@@ -7,9 +7,10 @@ import glasslmLogo from '@/assets/glasslm-logo.png';
 interface ChatHeaderProps {
   connectedProviders: ConnectedProvider[];
   onConnectAIClick: () => void;
+  onMenuClick?: () => void;
 }
 
-export function ChatHeader({ connectedProviders, onConnectAIClick }: ChatHeaderProps) {
+export function ChatHeader({ connectedProviders, onConnectAIClick, onMenuClick }: ChatHeaderProps) {
   const hasConnections = connectedProviders.length > 0;
 
   return (
@@ -71,6 +72,19 @@ export function ChatHeader({ connectedProviders, onConnectAIClick }: ChatHeaderP
                 </>
               )}
             </Button>
+
+            {/* Mobile Menu Trigger - Only visible on mobile */}
+            {onMenuClick && (
+              <Button
+                variant="ghost"
+                size="sm"
+                onClick={onMenuClick}
+                className="md:hidden p-2 hover:bg-muted/50 rounded-lg"
+                aria-label="Open menu"
+              >
+                <Settings className="w-4 h-4" />
+              </Button>
+            )}
           </div>
         </div>
       </div>

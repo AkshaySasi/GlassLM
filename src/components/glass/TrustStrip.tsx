@@ -24,13 +24,13 @@ export function TrustStrip() {
                 </TooltipTrigger>
                 <TooltipContent className="glass-card border-border/50">
                   <p className="max-w-xs text-xs">
-                    All masking and unmasking happens in your browser. 
+                    All masking and unmasking happens in your browser.
                     Your data never passes through our servers.
                   </p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            
+
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -47,7 +47,7 @@ export function TrustStrip() {
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
-            
+
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
@@ -58,32 +58,32 @@ export function TrustStrip() {
                 </TooltipTrigger>
                 <TooltipContent className="glass-card border-border/50">
                   <p className="max-w-xs text-xs">
-                    Open DevTools and check for yourself. No cookies, no storage, 
+                    Open DevTools and check for yourself. No cookies, no storage,
                     no calls to our backend.
                   </p>
                 </TooltipContent>
               </Tooltip>
             </TooltipProvider>
           </div>
-          
-          {/* Links */}
-          <div className="flex items-center gap-2 md:gap-4 text-[10px] md:text-xs">
-            <Link 
-              to="/how-it-works" 
+
+          {/* Links - Hidden on mobile, shown on desktop */}
+          <div className="hidden md:flex items-center gap-2 md:gap-4 text-[10px] md:text-xs">
+            <Link
+              to="/how-it-works"
               className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors font-mono"
             >
               <HelpCircle className="w-3 h-3" />
               <span className="hidden sm:inline">How it works</span>
             </Link>
-            <Link 
-              to="/verify" 
+            <Link
+              to="/verify"
               className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors font-mono"
             >
               <Shield className="w-3 h-3" />
               <span className="hidden sm:inline">Verify Privacy</span>
             </Link>
-            <Link 
-              to="/changelog" 
+            <Link
+              to="/changelog"
               className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors font-mono"
             >
               <GitCommit className="w-3 h-3" />
