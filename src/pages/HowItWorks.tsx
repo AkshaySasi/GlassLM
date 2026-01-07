@@ -1,7 +1,7 @@
 import { ArrowLeft, ArrowRight, Keyboard, Lock, Cloud, Unlock } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { Button } from '@/components/ui/button';
-import glasslmLogo from '@/assets/glasslm-logo.png';
+import glasslmLogo from '@/assets/glasslm-logo.webp';
 
 const HowItWorks = () => {
   const steps = [
@@ -57,15 +57,15 @@ const HowItWorks = () => {
           </Link>
         </div>
       </header>
-      
+
       <main className="flex-1 container mx-auto px-4 md:px-6 pt-24 pb-12">
         <div className="max-w-4xl mx-auto">
           {/* Hero */}
           <div className="text-center mb-16">
             <div className="w-20 h-20 mx-auto mb-6 animate-float">
-              <img 
-                src={glasslmLogo} 
-                alt="GlassLM Crystal" 
+              <img
+                src={glasslmLogo}
+                alt="GlassLM Crystal"
                 className="w-full h-full object-contain drop-shadow-2xl"
               />
             </div>
@@ -73,11 +73,11 @@ const HowItWorks = () => {
               <span className="text-crystal">How GlassLM Works</span>
             </h1>
             <p className="text-muted-foreground max-w-lg mx-auto">
-              A simple 4-step process that keeps your sensitive data private 
+              A simple 4-step process that keeps your sensitive data private
               while still giving you the full power of AI.
             </p>
           </div>
-          
+
           {/* Steps */}
           <div className="space-y-6 mb-16">
             {steps.map((step, index) => (
@@ -86,12 +86,12 @@ const HowItWorks = () => {
                 {index < steps.length - 1 && (
                   <div className="absolute left-8 top-20 bottom-0 w-px bg-gradient-to-b from-primary/50 to-transparent hidden md:block" style={{ height: 'calc(100% + 24px)' }} />
                 )}
-                
+
                 <div className="glass-card rounded-2xl p-6 hover:scale-[1.01] transition-transform duration-300">
                   <div className="flex flex-col md:flex-row gap-6">
                     {/* Step number and icon */}
                     <div className="flex items-start gap-4 md:w-48 shrink-0">
-                      <div 
+                      <div
                         className="w-16 h-16 rounded-xl glass-card flex items-center justify-center"
                         style={{ boxShadow: `0 0 30px hsl(${step.glowColor} / 0.3)` }}
                       >
@@ -102,7 +102,7 @@ const HowItWorks = () => {
                         <h3 className="font-semibold text-lg">{step.title}</h3>
                       </div>
                     </div>
-                    
+
                     {/* Content */}
                     <div className="flex-1">
                       <div className="hidden md:block mb-2">
@@ -112,7 +112,7 @@ const HowItWorks = () => {
                       <p className="text-muted-foreground text-sm mb-4">
                         {step.description}
                       </p>
-                      
+
                       {/* Example */}
                       <div className="bg-background/40 rounded-xl p-4 border border-border/30">
                         <p className="text-xs font-mono text-muted-foreground mb-2">Example:</p>
@@ -123,7 +123,7 @@ const HowItWorks = () => {
                     </div>
                   </div>
                 </div>
-                
+
                 {/* Arrow between steps */}
                 {index < steps.length - 1 && (
                   <div className="flex justify-center my-4 md:hidden">
@@ -133,7 +133,7 @@ const HowItWorks = () => {
               </div>
             ))}
           </div>
-          
+
           {/* CTA */}
           <div className="text-center">
             <p className="text-muted-foreground mb-4">

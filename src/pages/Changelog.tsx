@@ -1,6 +1,6 @@
 import { ArrowLeft, GitCommit, Clock } from 'lucide-react';
 import { Link } from 'react-router-dom';
-import glasslmLogo from '@/assets/glasslm-logo.png';
+import glasslmLogo from '@/assets/glasslm-logo.webp';
 
 const CHANGELOG_ENTRIES = [
   {
@@ -34,7 +34,7 @@ const Changelog = () => {
           </Link>
         </div>
       </header>
-      
+
       <main className="flex-1 container mx-auto px-4 md:px-6 pt-24 pb-12">
         <div className="max-w-2xl mx-auto">
           {/* Hero */}
@@ -42,20 +42,20 @@ const Changelog = () => {
             <div className="w-16 h-16 rounded-2xl glass-card flex items-center justify-center mb-6 mx-auto animate-glow">
               <GitCommit className="w-8 h-8 text-primary" />
             </div>
-            
+
             <h1 className="text-3xl md:text-4xl font-semibold mb-4">
               <span className="text-crystal">Changelog</span>
             </h1>
-            
+
             <p className="text-muted-foreground max-w-lg mx-auto">
               What's new in GlassLM. We believe in transparent development.
             </p>
           </div>
-          
+
           {/* Changelog entries */}
           <div className="space-y-6">
             {CHANGELOG_ENTRIES.map((entry, index) => (
-              <div 
+              <div
                 key={entry.version}
                 className="glass-card rounded-xl p-6 hover:scale-[1.01] transition-transform duration-300"
               >
@@ -68,9 +68,9 @@ const Changelog = () => {
                     <span>{entry.date}</span>
                   </div>
                 </div>
-                
+
                 <h2 className="font-semibold text-lg mb-3">{entry.title}</h2>
-                
+
                 <ul className="space-y-2">
                   {entry.changes.map((change, changeIndex) => (
                     <li key={changeIndex} className="flex items-start gap-2 text-sm text-muted-foreground">
@@ -82,7 +82,7 @@ const Changelog = () => {
               </div>
             ))}
           </div>
-          
+
           {/* Footer note */}
           <div className="mt-12 text-center">
             <p className="text-sm text-muted-foreground font-mono">

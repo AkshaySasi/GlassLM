@@ -2,8 +2,8 @@ import chatgptLogo from '@/assets/ai-logos/chatgpt.webp';
 import claudeLogo from '@/assets/ai-logos/claude.webp';
 import geminiLogo from '@/assets/ai-logos/gemini.webp';
 import grokLogo from '@/assets/ai-logos/grok.webp';
-import deepseekLogo from '@/assets/ai-logos/deepseek.png';
-import mistralLogo from '@/assets/ai-logos/mistral.png';
+import deepseekLogo from '@/assets/ai-logos/deepseek.webp';
+import mistralLogo from '@/assets/ai-logos/mistral.webp';
 
 export type AIProvider = {
   id: string;

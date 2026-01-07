@@ -2,7 +2,7 @@ import { Plus, Cpu, Coffee, Settings } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import { ConnectedProvider } from '@/lib/glass/aiProviders';
 import { Button } from '@/components/ui/button';
-import glasslmLogo from '@/assets/glasslm-logo.png';
+import glasslmLogo from '@/assets/glasslm-logo.webp';
 
 interface ChatHeaderProps {
   connectedProviders: ConnectedProvider[];
