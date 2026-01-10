@@ -1,5 +1,7 @@
 # GlassLM - Privacy-Safe AI Chat
 
+<a href="https://www.producthunt.com/products/glasslm?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-glasslm" target="_blank" rel="noopener noreferrer"><img alt="GlassLM - A Glass-Box Layer For Your AI | Product Hunt" width="250" height="54" src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1059756&theme=light&t=1768032088791"></a>
+
 A privacy-focused AI chat application that automatically masks sensitive data before sending to AI providers.
 
 ## Project Overview

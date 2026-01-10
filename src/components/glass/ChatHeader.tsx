@@ -34,6 +34,22 @@ export function ChatHeader({ connectedProviders, onConnectAIClick, onMenuClick }
           </div>
 
           <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
+            {/* Product Hunt Badge - Hidden on mobile */}
+            <a
+              href="https://www.producthunt.com/products/glasslm?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-glasslm"
+              target="_blank"
+              rel="noopener noreferrer"
+              className="hidden md:flex items-center hover:opacity-80 transition-opacity"
+            >
+              <img
+                alt="GlassLM - Product Hunt"
+                width="120"
+                height="26"
+                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1059756&theme=light&t=1768032088791"
+                className="h-6"
+              />
+            </a>
+
             <Button
               variant="ghost"
               size="sm"

@@ -15,6 +15,7 @@ const CHANGELOG_ENTRIES = [
       '"What AI Saw" transparency panel',
       'Network inspector for request verification',
       'Test masking mode for privacy-only analysis',
+      '🎉 Featured on Product Hunt',
     ],
   },
 ];
