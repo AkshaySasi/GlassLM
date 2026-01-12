@@ -1,4 +1,4 @@
-import { Eye, Cpu, Lock, Shield, HelpCircle, GitCommit } from 'lucide-react';
+import { MessageCircle, Cpu, Lock, Shield, GitCommit } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import {
   Tooltip,
@@ -51,15 +51,17 @@ export function TrustStrip() {
             <TooltipProvider>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <div className="hidden sm:flex items-center gap-1.5 cursor-help hover:text-primary transition-colors">
-                    <Eye className="w-3 h-3 text-primary" />
-                    <span className="font-mono">You Verify</span>
-                  </div>
+                  <a
+                    href="mailto:hello@glasslm.space"
+                    className="hidden sm:flex items-center gap-1.5 hover:text-primary transition-colors"
+                  >
+                    <MessageCircle className="w-3 h-3 text-primary" />
+                    <span className="font-mono">Feedback</span>
+                  </a>
                 </TooltipTrigger>
                 <TooltipContent className="glass-card border-border/50">
-                  <p className="max-w-xs text-xs">
-                    Open DevTools and check for yourself. No cookies, no storage,
-                    no calls to our backend.
+                  <p className="text-xs font-mono">
+                    Feedback · hello@glasslm.space
                   </p>
                 </TooltipContent>
               </Tooltip>
@@ -68,13 +70,7 @@ export function TrustStrip() {
 
           {/* Links - Hidden on mobile, shown on desktop */}
           <div className="hidden md:flex items-center gap-2 md:gap-4 text-[10px] md:text-xs">
-            <Link
-              to="/how-it-works"
-              className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors font-mono"
-            >
-              <HelpCircle className="w-3 h-3" />
-              <span className="hidden sm:inline">How it works</span>
-            </Link>
+
             <Link
               to="/verify"
               className="flex items-center gap-1 text-muted-foreground hover:text-primary transition-colors font-mono"

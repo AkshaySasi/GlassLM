@@ -107,6 +107,19 @@ const Support = () => {
               </p>
             </div>
           </div>
+
+          {/* Feedback contact */}
+          <div className="mt-12 text-center">
+            <p className="text-sm text-muted-foreground">
+              Questions, issues, or thoughtful feedback:{' '}
+              <a
+                href="mailto:hello@glasslm.space"
+                className="text-primary hover:text-primary/80 transition-colors font-mono"
+              >
+                hello@glasslm.space
+              </a>
+            </p>
+          </div>
         </div>
       </main>
     </div>
