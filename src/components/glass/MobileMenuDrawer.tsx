@@ -48,6 +48,23 @@ export function MobileMenuDrawer({ isOpen, onClose, onConnectAI }: MobileMenuDra
                         </button>
                     </div>
 
+                    {/* Product Hunt Badge - Mobile Only */}
+                    <div className="px-6 py-4 border-b border-border/30">
+                        <a
+                            href="https://www.producthunt.com/products/glasslm?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-glasslm"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            onClick={handleItemClick}
+                            className="flex items-center justify-center hover:opacity-80 transition-opacity"
+                        >
+                            <img
+                                alt="GlassLM - Product Hunt"
+                                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1059756&theme=light&t=1768032088791"
+                                className="h-10"
+                            />
+                        </a>
+                    </div>
+
                     {/* Menu Items */}
                     <div className="py-2">
                         <Link

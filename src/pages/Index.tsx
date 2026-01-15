@@ -14,12 +14,38 @@ import { WelcomeScreen } from '@/components/glass/WelcomeScreen';
 import { NetworkInspector } from '@/components/glass/NetworkInspector';
 import { AIProviderModal } from '@/components/glass/AIProviderModal';
 import { MobileMenuDrawer } from '@/components/glass/MobileMenuDrawer';
+import { ChatSidebar } from '@/components/glass/ChatSidebar';
+import {
+  ChatSession,
+  createNewSession,
+  generateChatTitle,
+  loadSessionsFromStorage,
+  saveSessionsToStorage,
+  loadActiveSessionId,
+  saveActiveSessionId
+} from '@/lib/glass/chatSessions';
 
 // Store leakage warnings per message
 type MessageLeakageMap = Record<string, LeakageWarning[]>;
 
 const Index = () => {
-  const [messages, setMessages] = useState<ChatMessageType[]>([]);
+  // Multi-chat session management
+  const [chatSessions, setChatSessions] = useState<ChatSession[]>(() => {
+    const sessions = loadSessionsFromStorage();
+    if (sessions.length === 0) {
+      const newSession = createNewSession();
+      return [newSession];
+    }
+    return sessions;
+  });
+
+  const [activeSessionId, setActiveSessionId] = useState<string>(() => {
+    const savedId = loadActiveSessionId();
+    if (savedId) return savedId;
+    return chatSessions[0]?.id || '';
+  });
+
+  const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [networkRequests, setNetworkRequests] = useState<NetworkRequest[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const [messageLeakage, setMessageLeakage] = useState<MessageLeakageMap>({});
@@ -29,11 +55,20 @@ const Index = () => {
   // Session-level storage for masked items (for unmasking AI responses)
   const [sessionMaskedItems, setSessionMaskedItems] = useState<MaskedItem[]>([]);
 
-  // AI Provider state (kept in memory only - cleared on tab close)
-  const [connectedProviders, setConnectedProviders] = useState<ConnectedProvider[]>([]);
-  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(null);
+  // AI Provider state (persisted in sessionStorage - cleared on tab close)
+  const [connectedProviders, setConnectedProviders] = useState<ConnectedProvider[]>(() => {
+    const saved = sessionStorage.getItem('glasslm_connected_providers');
+    return saved ? JSON.parse(saved) : [];
+  });
+  const [selectedProviderId, setSelectedProviderId] = useState<string | null>(() => {
+    return sessionStorage.getItem('glasslm_selected_provider_id');
+  });
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
+  // Get active session
+  const activeSession = chatSessions.find(s => s.id === activeSessionId) || chatSessions[0];
+  const messages = activeSession?.messages || [];
 
   const scrollToBottom = () => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
@@ -42,6 +77,79 @@ const Index = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+
+  // Helper function to update messages in active session
+  const updateSessionMessages = (updater: (messages: ChatMessageType[]) => ChatMessageType[]) => {
+    setChatSessions(prev => prev.map(session => {
+      if (session.id === activeSessionId) {
+        const updatedMessages = updater(session.messages);
+        const updatedSession = {
+          ...session,
+          messages: updatedMessages,
+          title: updatedMessages.length > 0 ? generateChatTitle(updatedMessages) : 'New Chat',
+          updatedAt: new Date(),
+        };
+        return updatedSession;
+      }
+      return session;
+    }));
+  };
+
+  // Persist chat sessions to sessionStorage
+  useEffect(() => {
+    saveSessionsToStorage(chatSessions);
+  }, [chatSessions]);
+
+  // Persist active session ID
+  useEffect(() => {
+    if (activeSessionId) {
+      saveActiveSessionId(activeSessionId);
+    }
+  }, [activeSessionId]);
+
+  // Persist connected providers to sessionStorage
+  useEffect(() => {
+    sessionStorage.setItem('glasslm_connected_providers', JSON.stringify(connectedProviders));
+  }, [connectedProviders]);
+
+  // Persist selected provider ID to sessionStorage
+  useEffect(() => {
+    if (selectedProviderId) {
+      sessionStorage.setItem('glasslm_selected_provider_id', selectedProviderId);
+    } else {
+      sessionStorage.removeItem('glasslm_selected_provider_id');
+    }
+  }, [selectedProviderId]);
+
+  // Session management handlers
+  const handleNewChat = () => {
+    const newSession = createNewSession(selectedProviderId);
+    setChatSessions(prev => [...prev, newSession]);
+    setActiveSessionId(newSession.id);
+    setMessageLeakage({});
+  };
+
+  const handleSelectSession = (sessionId: string) => {
+    setActiveSessionId(sessionId);
+    setMessageLeakage({});
+  };
+
+  const handleDeleteSession = (sessionId: string) => {
+    if (chatSessions.length === 1) {
+      // Don't delete the last session, just clear it
+      const newSession = createNewSession(selectedProviderId);
+      setChatSessions([newSession]);
+      setActiveSessionId(newSession.id);
+    } else {
+      setChatSessions(prev => prev.filter(s => s.id !== sessionId));
+      if (activeSessionId === sessionId) {
+        const remaining = chatSessions.filter(s => s.id !== sessionId);
+        setActiveSessionId(remaining[0].id);
+      }
+    }
+    setMessageLeakage({});
+  };
 
   const handleConnectProvider = (providerId: string, apiKey: string) => {
     setConnectedProviders(prev => [
@@ -78,7 +186,7 @@ const Index = () => {
       timestamp: new Date(),
     };
 
-    setMessages(prev => [...prev, userMessage]);
+    updateSessionMessages(prev => [...prev, userMessage]);
     setIsLoading(true);
 
     // Add loading message
@@ -90,13 +198,13 @@ const Index = () => {
       providerId,
       isLoading: true,
     };
-    setMessages(prev => [...prev, loadingMessage]);
+    updateSessionMessages(prev => [...prev, loadingMessage]);
 
     const provider = AI_PROVIDERS.find(p => p.id === providerId);
     const connectedProvider = connectedProviders.find(p => p.providerId === providerId);
 
     if (!connectedProvider) {
-      setMessages(prev => {
+      updateSessionMessages(prev => {
         const withoutLoading = prev.filter(m => m.id !== loadingMessage.id);
         return [...withoutLoading, {
           id: `msg_${Date.now()}_error`,
@@ -272,7 +380,7 @@ const Index = () => {
       }
 
       // Remove loading message and add real response with masked items for InlineReveal
-      setMessages(prev => {
+      updateSessionMessages(prev => {
         const withoutLoading = prev.filter(m => m.id !== loadingMessage.id);
         return [...withoutLoading, {
           id: responseId,
@@ -308,7 +416,7 @@ const Index = () => {
         friendlyMessage = `Something went wrong with ${provider?.name || 'the AI'}. Please try again or switch providers.${dataNotSent}`;
       }
 
-      setMessages(prev => {
+      updateSessionMessages(prev => {
         const withoutLoading = prev.filter(m => m.id !== loadingMessage.id);
         return [...withoutLoading, {
           id: `msg_${Date.now()}_error`,
@@ -337,63 +445,90 @@ const Index = () => {
     }
   };
 
+  // Handle going home (create new chat session)
+  const handleGoHome = () => {
+    const newSession = createNewSession();
+    setChatSessions(prev => [newSession, ...prev]);
+    setActiveSessionId(newSession.id);
+    setIsSidebarOpen(false);
+  };
+
   const hasMessages = messages.length > 0;
   const hasProviders = connectedProviders.length > 0;
 
   return (
-    <div className="min-h-screen bg-background flex flex-col">
-      <ChatHeader
-        connectedProviders={connectedProviders}
-        onConnectAIClick={() => setIsAIModalOpen(true)}
-        onMenuClick={() => setIsMobileMenuOpen(true)}
+    <div className="min-h-screen h-screen overflow-hidden bg-background flex">
+      {/* Chat Sidebar */}
+      <ChatSidebar
+        sessions={chatSessions}
+        activeSessionId={activeSessionId}
+        onSelectSession={handleSelectSession}
+        onNewChat={handleNewChat}
+        onDeleteSession={handleDeleteSession}
+        isOpen={isSidebarOpen}
+        onToggle={() => setIsSidebarOpen(!isSidebarOpen)}
       />
 
-      <main className="flex-1 container mx-auto px-3 md:px-6 pt-16 md:pt-20 pb-32 md:pb-40">
-        {!hasMessages ? (
-          <WelcomeScreen
-            hasProviders={hasProviders}
-          />
-        ) : (
-          <div className="max-w-3xl mx-auto py-8 space-y-6">
-            {/* New Chat button */}
-            <div className="flex justify-center">
-              <button
-                onClick={() => {
-                  setMessages([]);
-                  setMessageLeakage({});
-                }}
-                className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
-              >
-                <RotateCcw className="w-3 h-3" />
-                New Chat
-              </button>
-            </div>
+      {/* Main Content */}
+      <div className="flex-1 flex flex-col min-w-0 transition-all duration-500 h-screen overflow-hidden">
+        <ChatHeader
+          connectedProviders={connectedProviders}
+          onConnectAIClick={() => setIsAIModalOpen(true)}
+          onMenuClick={() => setIsMobileMenuOpen(true)}
+          onGoHome={handleGoHome}
+        />
 
-            {messages.map(message => (
-              <ChatMessage
-                key={message.id}
-                message={message}
-                leakageWarnings={messageLeakage[message.id] || []}
+        <main className="flex-1 w-full px-3 md:px-6 pt-16 md:pt-20 pb-32 md:pb-40 overflow-y-auto">
+          <div className="max-w-5xl mx-auto w-full">
+            {!hasMessages ? (
+              <WelcomeScreen
+                hasProviders={hasProviders}
               />
-            ))}
-            <div ref={messagesEndRef} />
-          </div>
-        )}
-      </main>
+            ) : (
+              <div className="max-w-3xl mx-auto py-8 space-y-6">
+                {/* New Chat button */}
+                <div className="flex justify-center">
+                  <button
+                    onClick={() => {
+                      const newSession = createNewSession(selectedProviderId);
+                      setChatSessions(prev => [...prev, newSession]);
+                      setActiveSessionId(newSession.id);
+                      setMessageLeakage({});
+                    }}
+                    className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-mono text-muted-foreground hover:text-foreground hover:bg-muted/50 transition-colors"
+                  >
+                    <RotateCcw className="w-3 h-3" />
+                    New Chat
+                  </button>
+                </div>
 
-      <div className="fixed bottom-10 md:bottom-12 left-0 right-0 px-3 md:px-6 pb-3 md:pb-4">
-        <div className="max-w-3xl mx-auto">
-          <ChatInput
-            onSend={handleSend}
-            onFileUpload={handleFileUpload}
-            connectedProviders={connectedProviders}
-            selectedProviderId={selectedProviderId}
-            onSelectProvider={setSelectedProviderId}
-            onConnectAIClick={() => setIsAIModalOpen(true)}
-            isLoading={isLoading}
-            maskingRules={maskingRules}
-            onMaskingRulesChange={setMaskingRules}
-          />
+                {messages.map(message => (
+                  <ChatMessage
+                    key={message.id}
+                    message={message}
+                    leakageWarnings={messageLeakage[message.id] || []}
+                  />
+                ))}
+                <div ref={messagesEndRef} />
+              </div>
+            )}
+          </div>
+        </main>
+
+        <div className="fixed bottom-10 md:bottom-12 left-0 right-0 px-3 md:px-6 pb-3 md:pb-4">
+          <div className="max-w-3xl mx-auto">
+            <ChatInput
+              onSend={handleSend}
+              onFileUpload={handleFileUpload}
+              connectedProviders={connectedProviders}
+              selectedProviderId={selectedProviderId}
+              onSelectProvider={setSelectedProviderId}
+              onConnectAIClick={() => setIsAIModalOpen(true)}
+              isLoading={isLoading}
+              maskingRules={maskingRules}
+              onMaskingRulesChange={setMaskingRules}
+            />
+          </div>
         </div>
       </div>
 
@@ -417,3 +552,4 @@ const Index = () => {
 };
 
 export default Index;
+

@@ -8,9 +8,10 @@ interface ChatHeaderProps {
   connectedProviders: ConnectedProvider[];
   onConnectAIClick: () => void;
   onMenuClick?: () => void;
+  onGoHome?: () => void;
 }
 
-export function ChatHeader({ connectedProviders, onConnectAIClick, onMenuClick }: ChatHeaderProps) {
+export function ChatHeader({ connectedProviders, onConnectAIClick, onMenuClick, onGoHome }: ChatHeaderProps) {
   const hasConnections = connectedProviders.length > 0;
 
   return (
@@ -18,7 +19,10 @@ export function ChatHeader({ connectedProviders, onConnectAIClick, onMenuClick }
       <div className="container mx-auto px-3 md:px-6 py-2.5 md:py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2 md:gap-4 min-w-0">
-            <Link to="/" className="flex items-center gap-2 md:gap-3 hover:opacity-90 transition-opacity flex-shrink-0">
+            <button
+              onClick={onGoHome}
+              className="flex items-center gap-2 md:gap-3 hover:opacity-90 transition-opacity flex-shrink-0 cursor-pointer bg-transparent border-0 p-0"
+            >
               <img
                 src={glasslmLogo}
                 alt="GlassLM"
@@ -27,19 +31,19 @@ export function ChatHeader({ connectedProviders, onConnectAIClick, onMenuClick }
               <h1 className="font-mono text-base md:text-lg font-semibold tracking-tight text-crystal">
                 GLASS LM
               </h1>
-            </Link>
+            </button>
             <span className="hidden lg:block text-xs text-muted-foreground font-mono border-l border-border/50 pl-4 truncate">
               A Glass-Box Layer For Your AI
             </span>
           </div>
 
           <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
-            {/* Product Hunt Badge - Responsive sizing */}
+            {/* Product Hunt Badge - Subtler styling */}
             <a
               href="https://www.producthunt.com/products/glasslm?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-glasslm"
               target="_blank"
               rel="noopener noreferrer"
-              className="flex items-center hover:opacity-80 transition-opacity"
+              className="hidden md:flex items-center opacity-60 hover:opacity-100 scale-90 hover:scale-100 transition-all duration-300"
             >
               <img
                 alt="GlassLM - Product Hunt"
@@ -105,3 +109,4 @@ export function ChatHeader({ connectedProviders, onConnectAIClick, onMenuClick }
     </header>
   );
 }
+

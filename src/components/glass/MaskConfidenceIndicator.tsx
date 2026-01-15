@@ -20,28 +20,28 @@ function calculateConfidence(
   originalText: string
 ): { level: ConfidenceLevel; details: string[] } {
   const details: string[] = [];
-  
+
   if (maskedItems.length === 0) {
     // Check if text might contain undetected PII
     const hasAtSign = originalText.includes('@');
     const hasNumbers = /\d{3,}/.test(originalText);
     const hasCapitalizedWords = /[A-Z][a-z]+ [A-Z][a-z]+/.test(originalText);
-    
+
     if (hasAtSign || hasNumbers || hasCapitalizedWords) {
       details.push('Text may contain undetected sensitive data');
       return { level: 'medium', details };
     }
-    return { level: 'high', details: ['No sensitive data detected'] };
+    return { level: 'high', details: ['No sensitive data found'] };
   }
 
   // High confidence types
   const highConfidenceTypes = ['email', 'ssn', 'credit_card', 'phone'];
   const mediumConfidenceTypes = ['name'];
-  
-  const highConfCount = maskedItems.filter(i => 
+
+  const highConfCount = maskedItems.filter(i =>
     highConfidenceTypes.includes(i.type)
   ).length;
-  const mediumConfCount = maskedItems.filter(i => 
+  const mediumConfCount = maskedItems.filter(i =>
     mediumConfidenceTypes.includes(i.type)
   ).length;
 
@@ -55,7 +55,7 @@ function calculateConfidence(
   // Check for potential missed items
   const remainingText = originalText;
   const hasUnmaskedNumbers = /\b\d{5,}\b/.test(remainingText);
-  
+
   if (hasUnmaskedNumbers) {
     details.push('Some number sequences may not be masked');
   }
@@ -64,9 +64,9 @@ function calculateConfidence(
     return { level: 'medium', details };
   }
 
-  return { 
-    level: highConfCount > 0 ? 'high' : 'medium', 
-    details 
+  return {
+    level: highConfCount > 0 ? 'high' : 'medium',
+    details
   };
 }
 
@@ -80,7 +80,7 @@ export function MaskConfidenceIndicator({
   const config = {
     high: {
       icon: CheckCircle,
-      text: 'High confidence masking',
+      text: 'Clean - no sensitive data',
       color: 'text-success',
       bgColor: 'bg-success/10',
       borderColor: 'border-success/20',

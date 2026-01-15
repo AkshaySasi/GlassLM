@@ -1,6 +1,7 @@
 import { Eye, Cpu, Lock, HelpCircle } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import glasslmLogo from '@/assets/glasslm-logo.webp';
+import { FirstTimeGuide } from './FirstTimeGuide';
 
 interface WelcomeScreenProps {
   hasProviders: boolean;
@@ -24,9 +25,8 @@ export function WelcomeScreen({ hasProviders }: WelcomeScreenProps) {
           <span className="text-muted-foreground text-lg md:text-2xl">Your sensitive data never reaches the AI.</span>
         </h1>
 
-        <p className="text-muted-foreground text-sm md:text-base max-w-lg mx-auto mb-3 md:mb-4 px-2">
-          GlassLM masks sensitive data before sending prompts to your AI, and restores it locally after the response.
-        </p>
+        {/* Inline 3-step guide replacing description paragraph */}
+        <FirstTimeGuide />
 
         <Link
           to="/how-it-works"
@@ -65,3 +65,4 @@ export function WelcomeScreen({ hasProviders }: WelcomeScreenProps) {
     </div>
   );
 }
+

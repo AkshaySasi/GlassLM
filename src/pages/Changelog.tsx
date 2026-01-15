@@ -4,18 +4,26 @@ import glasslmLogo from '@/assets/glasslm-logo.webp';
 
 const CHANGELOG_ENTRIES = [
   {
+    version: 'v1.1.0',
+    date: 'January 2026',
+    title: 'Multi-Chat & UX Enhancements',
+    changes: [
+      'Multi-chat sidebar with persistent sessions',
+      'Support multiple AI providers per session',
+      'Improved privacy controls and transparency',
+      'UI polish: custom scrollbar and mobile footer actions',
+    ],
+  },
+  {
     version: 'v0.1.0',
     date: 'January 2025',
     title: 'Initial Public Release',
     changes: [
-      'Privacy-first AI chat interface with automatic PII masking',
-      'Support for ChatGPT, Claude, Gemini, Grok, and DeepSeek',
-      'Memory-only API key storage (never persisted)',
-      'Real-time mask preview and confidence indicators',
-      '"What AI Saw" transparency panel',
-      'Network inspector for request verification',
-      'Test masking mode for privacy-only analysis',
-      '🎉 Featured on Product Hunt',
+      'Privacy-first AI chat with automatic PII masking',
+      'BYO AI providers (ChatGPT, Claude, Gemini, Grok, DeepSeek)',
+      'Memory-only API keys and local-only processing',
+      'Mask preview, “What AI Saw” panel, and request inspector',
+      'Launched on Product Hunt',
     ],
   },
 ];

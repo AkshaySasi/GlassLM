@@ -43,16 +43,16 @@ export function ChatInput({
   const [showPrivacyTest, setShowPrivacyTest] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
-  
-  const selectedProvider = selectedProviderId 
+
+  const selectedProvider = selectedProviderId
     ? AI_PROVIDERS.find(p => p.id === selectedProviderId)
     : null;
-  
+
   const hasProviders = connectedProviders.length > 0;
 
   // Get masking preview for confidence indicator
   const { maskedItems } = input.trim() ? autoMask(input) : { maskedItems: [] };
-  
+
   const handleSend = () => {
     if (!input.trim() || !selectedProviderId || isLoading) return;
     onSend(input.trim(), selectedProviderId);
@@ -61,14 +61,14 @@ export function ChatInput({
       textareaRef.current.style.height = 'auto';
     }
   };
-  
+
   const handleKeyDown = (e: KeyboardEvent) => {
     if (e.key === 'Enter' && !e.shiftKey) {
       e.preventDefault();
       handleSend();
     }
   };
-  
+
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -78,20 +78,20 @@ export function ChatInput({
       fileInputRef.current.value = '';
     }
   };
-  
+
   const handleTextareaChange = (e: React.ChangeEvent<HTMLTextAreaElement>) => {
     setInput(e.target.value);
     e.target.style.height = 'auto';
     e.target.style.height = Math.min(e.target.scrollHeight, 200) + 'px';
   };
-  
+
   return (
     <>
       <div className="glass-card rounded-xl md:rounded-2xl p-2 md:p-3">
         {/* Confidence indicator when there's input */}
         {input.trim() && (
           <div className="flex items-center justify-between mb-2 pb-2 border-b border-border/30 gap-2">
-            <MaskConfidenceIndicator 
+            <MaskConfidenceIndicator
               maskedItems={maskedItems}
               originalText={input}
             />
@@ -106,7 +106,7 @@ export function ChatInput({
             </Button>
           </div>
         )}
-        
+
         <div className="flex items-end gap-1.5 md:gap-2">
           <Button
             variant="ghost"
@@ -124,7 +124,7 @@ export function ChatInput({
             onChange={handleFileSelect}
             className="hidden"
           />
-          
+
           <textarea
             ref={textareaRef}
             value={input}
@@ -135,17 +135,17 @@ export function ChatInput({
             rows={1}
             className="flex-1 bg-transparent border-none outline-none resize-none text-foreground placeholder:text-muted-foreground text-sm py-2 max-h-[200px]"
           />
-          
+
           <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
             {hasProviders ? (
               <>
                 <div className="hidden sm:block">
-                  <MaskingRulesPanel 
+                  <MaskingRulesPanel
                     rules={maskingRules}
                     onRulesChange={onMaskingRulesChange}
                   />
                 </div>
-                
+
                 <DropdownMenu>
                   <DropdownMenuTrigger asChild>
                     <Button
@@ -176,7 +176,7 @@ export function ChatInput({
                     })}
                   </DropdownMenuContent>
                 </DropdownMenu>
-                
+
                 <Button
                   onClick={handleSend}
                   disabled={!input.trim() || !selectedProviderId || isLoading}
@@ -199,17 +199,17 @@ export function ChatInput({
             )}
           </div>
         </div>
-        
+
         {hasProviders && (
-          <div className="hidden sm:flex items-center justify-center gap-1.5 mt-2 pt-2 border-t border-border/30">
+          <div className="hidden items-center justify-center gap-1.5 mt-2 pt-2 border-t border-border/30">
             <span className="text-[10px] text-muted-foreground/70 font-mono">
               Sensitive data is automatically masked before sending
             </span>
           </div>
         )}
       </div>
-      
-      <PrivacyTestPanel 
+
+      <PrivacyTestPanel
         inputText={input}
         isOpen={showPrivacyTest}
         onClose={() => setShowPrivacyTest(false)}
