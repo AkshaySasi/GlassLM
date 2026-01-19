@@ -86,6 +86,15 @@ export function MobileMenuDrawer({ isOpen, onClose, onConnectAI }: MobileMenuDra
                         </Link>
 
                         <Link
+                            to="/#faq"
+                            className="drawer-item flex items-center gap-4 px-6 py-4 hover:bg-muted/30 transition-colors"
+                            onClick={() => { onClose(); }}
+                        >
+                            <MessageCircle className="w-5 h-5 text-primary" />
+                            <span className="text-base font-medium">FAQ</span>
+                        </Link>
+
+                        <Link
                             to="/changelog"
                             onClick={handleItemClick}
                             className="drawer-item flex items-center gap-4 px-6 py-4 hover:bg-muted/30 transition-colors"

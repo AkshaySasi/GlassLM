@@ -489,3 +489,6 @@
     animation: scale-in 0.2s ease-out forwards;
   }
 }
+  .glass-card-subtle {
+    @apply bg-card/20 backdrop-blur-md;
+  }

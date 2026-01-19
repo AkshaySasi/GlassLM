@@ -23,6 +23,7 @@ export function AIProviderModal({
   const [apiKey, setApiKey] = useState('');
   const [showKey, setShowKey] = useState(false);
   const [isVerifying, setIsVerifying] = useState(false);
+  const [error, setError] = useState<string | null>(null);
 
   if (!isOpen) return null;
 
@@ -36,6 +37,7 @@ export function AIProviderModal({
       setSelectedProvider(provider);
       setApiKey('');
       setShowKey(false);
+      setError(null); // Clear any previous errors
     }
   };
 
@@ -43,12 +45,51 @@ export function AIProviderModal({
     if (!selectedProvider || !apiKey.trim()) return;
 
     setIsVerifying(true);
-    await new Promise((resolve) => setTimeout(resolve, 800));
 
-    onConnect(selectedProvider.id, apiKey);
-    setIsVerifying(false);
-    setSelectedProvider(null);
-    setApiKey('');
+    try {
+      // Test the API key with a real API call
+      let isValid = false;
+
+      if (selectedProvider.id === 'openai') {
+        const response = await fetch('https://api.openai.com/v1/models', {
+          headers: { 'Authorization': `Bearer ${apiKey}` }
+        });
+        isValid = response.ok;
+      } else if (selectedProvider.id === 'anthropic') {
+        const response = await fetch('https://api.anthropic.com/v1/messages', {
+          method: 'POST',
+          headers: {
+            'x-api-key': apiKey,
+            'anthropic-version': '2023-06-01',
+            'content-type': 'application/json'
+          },
+          body: JSON.stringify({
+            model: 'claude-3-haiku-20240307',
+            max_tokens: 1,
+            messages: [{ role: 'user', content: 'test' }]
+          })
+        });
+        isValid = response.ok;
+      } else if (selectedProvider.id === 'google') {
+        const response = await fetch(`https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`);
+        isValid = response.ok;
+      } else {
+        // For other providers, accept without validation for now
+        isValid = true;
+      }
+
+      if (isValid) {
+        onConnect(selectedProvider.id, apiKey);
+        setSelectedProvider(null);
+        setApiKey('');
+      } else {
+        setError('Invalid API key. Please check your key and try again.');
+      }
+    } catch (error) {
+      setError('Failed to verify API key. Please check your internet connection and try again.');
+    } finally {
+      setIsVerifying(false);
+    }
   };
 
   const handleDisconnect = () => {
@@ -188,7 +229,10 @@ export function AIProviderModal({
                         <Input
                           type={showKey ? 'text' : 'password'}
                           value={apiKey}
-                          onChange={(e) => setApiKey(e.target.value)}
+                          onChange={(e) => {
+                            setApiKey(e.target.value);
+                            setError(null);
+                          }}
                           placeholder={selectedProvider.apiKeyPlaceholder}
                           className="pl-10 pr-10 font-mono text-sm bg-background/40 border-border/50 rounded-xl"
                         />
@@ -209,6 +253,14 @@ export function AIProviderModal({
                     <p className="text-xs text-muted-foreground">
                       Your key is used only for this request and never stored.
                     </p>
+
+                    {/* Error Display */}
+                    {error && (
+                      <div className="flex items-start gap-2 p-3 rounded-xl bg-destructive/10 border border-destructive/30 animate-fade-in">
+                        <AlertTriangle className="w-4 h-4 text-destructive mt-0.5 shrink-0" />
+                        <p className="text-xs text-destructive">{error}</p>
+                      </div>
+                    )}
 
                     <Button
                       onClick={handleConnect}

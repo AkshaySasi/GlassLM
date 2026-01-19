@@ -7,13 +7,14 @@ import { detectLeakage, LeakageWarning } from '@/lib/glass/leakageDetector';
 import { registerMaskedItems } from '@/lib/glass/placeholderRegistry';
 import { MaskingRules, DEFAULT_MASKING_RULES } from '@/lib/glass/maskingRules';
 import { ChatHeader } from '@/components/glass/ChatHeader';
-import { TrustStrip } from '@/components/glass/TrustStrip';
 import { ChatMessage } from '@/components/glass/ChatMessage';
 import { ChatInput } from '@/components/glass/ChatInput';
 import { WelcomeScreen } from '@/components/glass/WelcomeScreen';
 import { NetworkInspector } from '@/components/glass/NetworkInspector';
 import { AIProviderModal } from '@/components/glass/AIProviderModal';
 import { MobileMenuDrawer } from '@/components/glass/MobileMenuDrawer';
+import { FAQ } from '@/components/glass/FAQ';
+import { Footer } from '@/components/glass/Footer';
 import { ChatSidebar } from '@/components/glass/ChatSidebar';
 import {
   ChatSession,
@@ -51,6 +52,11 @@ const Index = () => {
   const [messageLeakage, setMessageLeakage] = useState<MessageLeakageMap>({});
   const [maskingRules, setMaskingRules] = useState<MaskingRules>(DEFAULT_MASKING_RULES);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const faqSectionRef = useRef<HTMLDivElement>(null);
+  const footerRef = useRef<HTMLDivElement>(null);
+  const mainRef = useRef<HTMLElement>(null);
+  const [isFaqVisible, setIsFaqVisible] = useState(false);
+  const [isFooterVisible, setIsFooterVisible] = useState(false);
 
   // Session-level storage for masked items (for unmasking AI responses)
   const [sessionMaskedItems, setSessionMaskedItems] = useState<MaskedItem[]>([]);
@@ -65,6 +71,7 @@ const Index = () => {
   });
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const [isChatInputExpanded, setIsChatInputExpanded] = useState(false);
 
   // Get active session
   const activeSession = chatSessions.find(s => s.id === activeSessionId) || chatSessions[0];
@@ -77,6 +84,36 @@ const Index = () => {
   useEffect(() => {
     scrollToBottom();
   }, [messages]);
+
+  // Monitor FAQ section visibility
+  useEffect(() => {
+    if (!faqSectionRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsFaqVisible(entry.isIntersecting && entry.intersectionRatio > 0.3);
+      },
+      { threshold: [0, 0.3, 0.5, 1] }
+    );
+
+    observer.observe(faqSectionRef.current);
+    return () => observer.disconnect();
+  }, []);
+
+  // Monitor Footer visibility
+  useEffect(() => {
+    if (!footerRef.current) return;
+
+    const observer = new IntersectionObserver(
+      ([entry]) => {
+        setIsFooterVisible(entry.isIntersecting && entry.intersectionRatio > 0.2);
+      },
+      { threshold: [0, 0.2, 0.5, 1] }
+    );
+
+    observer.observe(footerRef.current);
+    return () => observer.disconnect();
+  }, []);
 
 
   // Helper function to update messages in active session
@@ -478,7 +515,7 @@ const Index = () => {
           onGoHome={handleGoHome}
         />
 
-        <main className="flex-1 w-full px-3 md:px-6 pt-16 md:pt-20 pb-32 md:pb-40 overflow-y-auto">
+        <main ref={mainRef} className="flex-1 w-full px-3 md:px-6 pt-16 md:pt-20 pb-6 overflow-y-auto">
           <div className="max-w-5xl mx-auto w-full">
             {!hasMessages ? (
               <WelcomeScreen
@@ -512,27 +549,57 @@ const Index = () => {
                 <div ref={messagesEndRef} />
               </div>
             )}
+
+            {/* FAQ Section - Only on Welcome Screen */}
+            {!hasMessages && (
+              <div ref={faqSectionRef}>
+                <FAQ />
+              </div>
+            )}
+
+            {/* Footer */}
+            <div ref={footerRef}>
+              <Footer />
+            </div>
           </div>
         </main>
 
-        <div className="fixed bottom-10 md:bottom-12 left-0 right-0 px-3 md:px-6 pb-3 md:pb-4">
-          <div className="max-w-3xl mx-auto">
-            <ChatInput
-              onSend={handleSend}
-              onFileUpload={handleFileUpload}
-              connectedProviders={connectedProviders}
-              selectedProviderId={selectedProviderId}
-              onSelectProvider={setSelectedProviderId}
-              onConnectAIClick={() => setIsAIModalOpen(true)}
-              isLoading={isLoading}
-              maskingRules={maskingRules}
-              onMaskingRulesChange={setMaskingRules}
-            />
+        {/* Chat Input - Visible by default, minimizes when scrolled to FAQ or Footer */}
+        {!hasMessages && (isFaqVisible || isFooterVisible) ? (
+          // Floating icon when scrolled to FAQ
+          <div className="fixed bottom-6 right-6 z-40">
+            <button
+              onClick={() => mainRef.current?.scrollTo({ top: 0, behavior: 'smooth' })}
+              className="group glass-card p-4 rounded-full hover:scale-110 transition-all duration-300 shadow-lg border-2 border-primary/30 hover:border-primary/60"
+              aria-label="Back to top"
+            >
+              <div className="relative">
+                <svg className="w-6 h-6 text-primary" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 10h.01M12 10h.01M16 10h.01M9 16H5a2 2 0 01-2-2V6a2 2 0 012-2h14a2 2 0 012 2v8a2 2 0 01-2 2h-5l-5 5v-5z" />
+                </svg>
+                <span className="absolute -top-1 -right-1 w-2 h-2 bg-primary rounded-full animate-pulse" />
+              </div>
+            </button>
           </div>
-        </div>
+        ) : (
+          // Normal chat input (welcome screen or chat view)
+          <div className="fixed bottom-10 md:bottom-12 left-0 right-0 px-3 md:px-6 pb-3 md:pb-4 transition-all duration-300">
+            <div className="max-w-3xl mx-auto">
+              <ChatInput
+                onSend={handleSend}
+                onFileUpload={handleFileUpload}
+                connectedProviders={connectedProviders}
+                selectedProviderId={selectedProviderId}
+                onSelectProvider={setSelectedProviderId}
+                onConnectAIClick={() => setIsAIModalOpen(true)}
+                isLoading={isLoading}
+                maskingRules={maskingRules}
+                onMaskingRulesChange={setMaskingRules}
+              />
+            </div>
+          </div>
+        )}
       </div>
-
-      <TrustStrip />
 
       <AIProviderModal
         isOpen={isAIModalOpen}
