@@ -4,6 +4,19 @@ import glasslmLogo from '@/assets/glasslm-logo.webp';
 
 const CHANGELOG_ENTRIES = [
   {
+    version: 'v1.5.0',
+    date: 'January 2026',
+    title: 'The "Ghost in the Shell" Update',
+    changes: [
+      'GlassLM Chrome Extension: Bring privacy to any website (Gemini, ChatGPT, and more)',
+      'Floating Crystal Icon: A "living" privacy toggle that floats on your screen',
+      'Legal Infrastructure: Added Privacy Policy and Terms of Service pages',
+      'Glass Preview Modal: Test masking safely before sending',
+      'Shadow DOM isolation for extension UI stability',
+      'Enhanced branding and crystal animations',
+    ],
+  },
+  {
     version: 'v1.1.0',
     date: 'January 2026',
     title: 'Multi-Chat & UX Enhancements',

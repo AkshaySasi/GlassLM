@@ -1,0 +1,67 @@
+#glasslm-floating-icon {
+    position: fixed;
+    z-index: 2147483647;
+    /* Max z-index */
+    cursor: pointer;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.2s ease, transform 0.2s ease;
+    transform: scale(0.9);
+}
+
+#glasslm-floating-icon.visible {
+    opacity: 1;
+    pointer-events: auto;
+    transform: scale(1);
+    animation: glasslm-float 3s ease-in-out infinite;
+}
+
+@keyframes glasslm-float {
+    0% {
+        transform: translateY(0px) scale(1);
+    }
+
+    50% {
+        transform: translateY(-3px) scale(1.05);
+        box-shadow: 0 8px 20px rgba(168, 85, 247, 0.5);
+    }
+
+    100% {
+        transform: translateY(0px) scale(1);
+    }
+}
+
+.glasslm-crystal {
+    width: 32px !important;
+    height: 32px !important;
+    min-width: 32px !important;
+    min-height: 32px !important;
+    max-width: 32px !important;
+    max-height: 32px !important;
+    background: linear-gradient(135deg, #a855f7, #6366f1);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 12px rgba(168, 85, 247, 0.4);
+    backdrop-filter: blur(8px);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    overflow: hidden;
+    /* Ensure image doesn't bleed out */
+}
+
+/* Strictly constrain the image inside */
+.glasslm-crystal img {
+    width: 100% !important;
+    height: 100% !important;
+    object-fit: cover !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: block !important;
+    border: none !important;
+}
+
+.glasslm-crystal:hover {
+    transform: scale(1.1);
+    box-shadow: 0 6px 16px rgba(168, 85, 247, 0.6);
+}

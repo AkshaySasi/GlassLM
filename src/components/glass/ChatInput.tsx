@@ -1,5 +1,5 @@
 import { useState, useRef, KeyboardEvent } from 'react';
-import { Send, Paperclip, ChevronDown, Cpu, FlaskConical } from 'lucide-react';
+import { Send, Paperclip, ChevronDown, Cpu, FlaskConical, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ConnectedProvider, AI_PROVIDERS } from '@/lib/glass/aiProviders';
 import { MaskingRules, DEFAULT_MASKING_RULES } from '@/lib/glass/maskingRules';
@@ -26,6 +26,7 @@ interface ChatInputProps {
   onMaskingRulesChange: (rules: MaskingRules) => void;
   offlineMode?: boolean;
   onOfflineModeChange?: (enabled: boolean) => void;
+  onPreviewClick: () => void;
 }
 
 export function ChatInput({
@@ -38,6 +39,7 @@ export function ChatInput({
   isLoading,
   maskingRules,
   onMaskingRulesChange,
+  onPreviewClick,
 }: ChatInputProps) {
   const [input, setInput] = useState('');
   const [showPrivacyTest, setShowPrivacyTest] = useState(false);
@@ -137,6 +139,17 @@ export function ChatInput({
           />
 
           <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
+            {/* Glass Preview Button */}
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={onPreviewClick}
+              className="text-muted-foreground hover:text-primary w-8 h-8 md:w-10 md:h-10"
+              title="Glass Preview"
+            >
+              <Eye className="w-4 h-4 md:w-5 md:h-5" />
+            </Button>
+
             {hasProviders ? (
               <>
                 <div className="hidden sm:block">

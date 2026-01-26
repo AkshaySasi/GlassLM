@@ -14,8 +14,10 @@ import { NetworkInspector } from '@/components/glass/NetworkInspector';
 import { AIProviderModal } from '@/components/glass/AIProviderModal';
 import { MobileMenuDrawer } from '@/components/glass/MobileMenuDrawer';
 import { FAQ } from '@/components/glass/FAQ';
+
 import { Footer } from '@/components/glass/Footer';
 import { ChatSidebar } from '@/components/glass/ChatSidebar';
+import { GlassPreviewModal } from '@/components/glass/GlassPreviewModal';
 import {
   ChatSession,
   createNewSession,
@@ -72,6 +74,7 @@ const Index = () => {
   const [isAIModalOpen, setIsAIModalOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [isChatInputExpanded, setIsChatInputExpanded] = useState(false);
+  const [isPreviewModalOpen, setIsPreviewModalOpen] = useState(false);
 
   // Get active session
   const activeSession = chatSessions.find(s => s.id === activeSessionId) || chatSessions[0];
@@ -595,6 +598,7 @@ const Index = () => {
                 isLoading={isLoading}
                 maskingRules={maskingRules}
                 onMaskingRulesChange={setMaskingRules}
+                onPreviewClick={() => setIsPreviewModalOpen(true)}
               />
             </div>
           </div>
@@ -607,6 +611,18 @@ const Index = () => {
         connectedProviders={connectedProviders}
         onConnect={handleConnectProvider}
         onDisconnect={handleDisconnectProvider}
+      />
+
+      <GlassPreviewModal
+        isOpen={isPreviewModalOpen}
+        onClose={() => setIsPreviewModalOpen(false)}
+        onSendToChat={(text) => {
+          if (selectedProviderId) {
+            handleSend(text, selectedProviderId);
+            setIsPreviewModalOpen(false);
+          }
+        }}
+        hasProvider={hasProviders}
       />
 
       <MobileMenuDrawer

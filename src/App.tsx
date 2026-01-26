@@ -9,6 +9,8 @@ import PrivacyVerification from "./pages/PrivacyVerification";
 import HowItWorks from "./pages/HowItWorks";
 import Changelog from "./pages/Changelog";
 import NotFound from "./pages/NotFound";
+import PrivacyPolicy from "./pages/PrivacyPolicy";
+import TermsOfService from "./pages/TermsOfService";
 
 const queryClient = new QueryClient();
 
@@ -24,6 +26,8 @@ const App = () => (
           <Route path="/verify" element={<PrivacyVerification />} />
           <Route path="/how-it-works" element={<HowItWorks />} />
           <Route path="/changelog" element={<Changelog />} />
+          <Route path="/privacy" element={<PrivacyPolicy />} />
+          <Route path="/terms" element={<TermsOfService />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>

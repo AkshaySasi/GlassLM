@@ -1,0 +1,56 @@
+{
+    "manifest_version": 3,
+    "name": "GlassLM - A Glass-Box Layer for your AI",
+    "version": "1.0.0",
+    "description": "Mask sensitive data before pasting into AI chatbots like ChatGPT, Claude, and Gemini.",
+    "permissions": [
+        "activeTab",
+        "storage",
+        "scripting",
+        "sidePanel"
+    ],
+    "host_permissions": [
+        "<all_urls>"
+    ],
+    "action": {
+        "default_title": "GlassLM",
+        "default_icon": {
+            "16": "icon128.png",
+            "48": "icon128.png",
+            "128": "icon128.png"
+        }
+    },
+    "content_scripts": [
+        {
+            "matches": [
+                "<all_urls>"
+            ],
+            "js": [
+                "content.js"
+            ]
+        }
+    ],
+    "background": {
+        "service_worker": "background.js"
+    },
+    "side_panel": {
+        "default_path": "src/extension/sidepanel.html"
+    },
+    "icons": {
+        "16": "icon128.png",
+        "48": "icon128.png",
+        "128": "icon128.png"
+    },
+    "web_accessible_resources": [
+        {
+            "resources": [
+                "icon128.png",
+                "src/extension/sidepanel.html",
+                "glass_logo.jpg"
+            ],
+            "matches": [
+                "<all_urls>"
+            ]
+        }
+    ]
+}
