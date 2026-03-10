@@ -1,0 +1,37 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "glasslm"
+version = "0.1.0"
+description = "Privacy guardrail for AI applications — mask PII before it reaches any LLM"
+readme = "README.md"
+license = { file = "LICENSE" }
+requires-python = ">=3.8"
+keywords = ["pii", "masking", "privacy", "llm", "ai", "security", "nlp"]
+authors = [
+    { name = "GlassLM", email = "glasslm@gmail.com" }
+]
+classifiers = [
+    "Development Status :: 4 - Beta",
+    "Intended Audience :: Developers",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Topic :: Security",
+    "Topic :: Software Development :: Libraries",
+]
+
+[project.urls]
+Homepage = "https://github.com/AkshaySasi/GlassLM"
+Repository = "https://github.com/AkshaySasi/GlassLM"
+Issues = "https://github.com/AkshaySasi/GlassLM/issues"
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["glasslm*"]

@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Eye, ShieldCheck, ArrowRight, Check, Activity, Search, Copy, AlertTriangle } from 'lucide-react';
+import { Eye, ShieldCheck, ArrowRight, Check, Activity, Search, Copy, AlertTriangle, Download } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { autoMask } from '@/lib/glass/masker';
 import { analyzePrivacyRisk } from '@/lib/glass/leakageDetector';
@@ -16,6 +16,55 @@ export function ExtensionSidePanel() {
     } | null>(null);
     const { toast } = useToast();
 
+    const pullTextFromPage = () => {
+        if (typeof chrome === 'undefined' || !chrome.tabs) return;
+
+        chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
+            const tab = tabs[0];
+            if (!tab || !tab.id) return;
+
+            // Don't try to interact with restricted pages
+            if (tab.url && (tab.url.startsWith('chrome://') || tab.url.startsWith('edge://'))) return;
+
+            // Try Message Passing first (fastest if content script is already there)
+            chrome.tabs.sendMessage(tab.id, { action: 'getText' }, (response) => {
+                // If content script is not found (e.g. on non-AI pages where we didn't inject it), fallback to scripting
+                if (chrome.runtime.lastError) {
+                    console.log("GlassLM: Content script not active, falling back to scripting API");
+
+                    if (chrome.scripting) {
+                        chrome.scripting.executeScript({
+                            target: { tabId: tab.id! },
+                            func: () => {
+                                // 1. Try Selection
+                                const selection = window.getSelection()?.toString();
+                                if (selection) return selection;
+
+                                // 2. Try Active Element (Input/Textarea)
+                                const active = document.activeElement as HTMLInputElement | HTMLTextAreaElement;
+                                if (active && (active.tagName === 'INPUT' || active.tagName === 'TEXTAREA')) {
+                                    return active.value;
+                                }
+                                return '';
+                            }
+                        }, (results) => {
+                            if (results && results[0] && results[0].result) {
+                                setInputText(results[0].result);
+                                handleRunPreview(results[0].result);
+                            }
+                        });
+                    }
+                    return;
+                }
+
+                if (response && response.text) {
+                    setInputText(response.text);
+                    handleRunPreview(response.text);
+                }
+            });
+        });
+    };
+
     // Listen for messages from content script
     useEffect(() => {
         const handleMessage = (message: any) => {
@@ -29,26 +78,7 @@ export function ExtensionSidePanel() {
             chrome.runtime.onMessage.addListener(handleMessage);
 
             // Also try to PULL text from the active tab immediately
-            // We use a small timeout to allow connection to establish
-            setTimeout(() => {
-                chrome.tabs.query({ active: true, currentWindow: true }, (tabs) => {
-                    const tabId = tabs[0]?.id;
-                    // Don't try to send messages to restricted pages (chrome://) or if no tab
-                    if (tabId && tabs[0].url && !tabs[0].url.startsWith('chrome://') && !tabs[0].url.startsWith('edge://')) {
-                        chrome.tabs.sendMessage(tabId, { action: 'getText' }, (response) => {
-                            // Checked runtime.lastError to suppress "Receiving end does not exist" if content script isn't ready
-                            if (chrome.runtime.lastError) {
-                                // Content script might not be loaded on this page yet, which is fine
-                                return;
-                            }
-                            if (response && response.text) {
-                                setInputText(response.text);
-                                handleRunPreview(response.text);
-                            }
-                        });
-                    }
-                });
-            }, 100);
+            setTimeout(pullTextFromPage, 100);
         }
 
         return () => {
@@ -95,14 +125,25 @@ export function ExtensionSidePanel() {
             <div className="flex-1 overflow-y-auto p-4 space-y-4">
                 {/* Input Section */}
                 <div className="space-y-2">
-                    <label className="text-xs font-medium text-muted-foreground">Original Text</label>
+                    <div className="flex items-center justify-between">
+                        <label className="text-xs font-medium text-muted-foreground">Original Text</label>
+                        <Button
+                            variant="ghost"
+                            size="icon"
+                            className="h-5 w-5 text-muted-foreground hover:text-foreground"
+                            onClick={pullTextFromPage}
+                            title="Import from selected text"
+                        >
+                            <Download className="w-3 h-3" />
+                        </Button>
+                    </div>
                     <textarea
                         value={inputText}
                         onChange={(e) => {
                             setInputText(e.target.value);
                             if (result) handleRunPreview(e.target.value);
                         }}
-                        placeholder="Select text on any page and click the GlassLM icon..."
+                        placeholder="Select text on any page and click the GlassLM icon (or Import button)..."
                         className="w-full h-32 p-3 rounded-lg bg-muted/20 border border-border/40 focus:border-primary/50 text-xs font-mono resize-none outline-none"
                     />
                     {!result && inputText && (

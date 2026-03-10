@@ -20,6 +20,9 @@ export function Footer() {
                             <Link to="/changelog" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
                                 Changelog
                             </Link>
+                            <Link to="/developers" className="block text-sm text-muted-foreground hover:text-primary transition-colors font-semibold text-primary/80">
+                                Developers / SDKs
+                            </Link>
                         </div>
                     </div>
 

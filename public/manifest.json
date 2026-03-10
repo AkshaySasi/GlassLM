@@ -23,7 +23,28 @@
     "content_scripts": [
         {
             "matches": [
-                "<all_urls>"
+                "*://*.openai.com/*",
+                "*://*.google.com/*",
+                "*://*.anthropic.com/*",
+                "*://*.x.ai/*",
+                "*://*.deepseek.com/*",
+                "*://*.mistral.ai/*",
+                "*://*.lovable.dev/*",
+                "*://*.replit.com/*",
+                "*://*.v0.dev/*",
+                "*://*.bolt.new/*",
+                "*://*.perplexity.ai/*",
+                "*://*.poe.com/*",
+                "*://*.jasper.ai/*",
+                "*://*.copy.ai/*",
+                "*://copilot.microsoft.com/*",
+                "*://copilot.github.com/*",
+                "*://*.cursor.sh/*",
+                "*://*.tabnine.com/*",
+                "*://*.meta.ai/*",
+                "*://*.pi.ai/*",
+                "*://*.botpress.com/*",
+                "*://*.stackblitz.com/*"
             ],
             "js": [
                 "content.js"

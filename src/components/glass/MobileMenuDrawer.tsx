@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, Shield, HelpCircle, GitCommit, Zap, MessageCircle } from 'lucide-react';
+import { X, Shield, HelpCircle, GitCommit, Zap, MessageCircle, Code2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 
 interface MobileMenuDrawerProps {
@@ -83,6 +83,15 @@ export function MobileMenuDrawer({ isOpen, onClose, onConnectAI }: MobileMenuDra
                         >
                             <HelpCircle className="w-5 h-5 text-primary" />
                             <span className="text-base font-medium">How it Works</span>
+                        </Link>
+
+                        <Link
+                            to="/developers"
+                            onClick={handleItemClick}
+                            className="drawer-item flex items-center gap-4 px-6 py-4 hover:bg-muted/30 transition-colors"
+                        >
+                            <Code2 className="w-5 h-5 text-primary" />
+                            <span className="text-base font-medium">Developers / SDKs</span>
                         </Link>
 
                         <Link

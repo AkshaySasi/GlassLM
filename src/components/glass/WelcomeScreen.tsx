@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Eye, Cpu, Lock, HelpCircle } from 'lucide-react';
+import { Eye, Cpu, Lock, HelpCircle, Code2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import glasslmLogo from '@/assets/glasslm-logo.webp';
 import { FirstTimeGuide } from './FirstTimeGuide';
@@ -73,18 +73,24 @@ export function WelcomeScreen({ hasProviders }: WelcomeScreenProps) {
                         </Link>
 
                         <a
-                            href="#"
-                            onClick={(e) => {
-                                e.preventDefault();
-                                alert('Extension coming soon to Chrome Web Store!');
-                            }}
+                            href="https://microsoftedge.microsoft.com/addons"
+                            target="_blank"
+                            rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all duration-300 font-mono"
                         >
                             <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-1.07 3.97-2.9 5.4z" />
                             </svg>
-                            Get Chrome Extension
+                            Get Edge Extension
                         </a>
+
+                        <Link
+                            to="/developers"
+                            className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-full bg-transparent border border-muted-foreground/30 text-muted-foreground hover:bg-white/5 hover:text-foreground transition-all duration-300 font-mono"
+                        >
+                            <Code2 className="w-4 h-4" />
+                            For Developers
+                        </Link>
                     </div>
                 </div>
             </div>

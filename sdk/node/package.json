@@ -1,0 +1,35 @@
+{
+  "name": "@glasslm/node",
+  "version": "0.1.0",
+  "description": "Node.js SDK for GlassLM",
+  "main": "dist/index.js",
+  "types": "dist/index.d.ts",
+  "scripts": {
+    "build": "tsc",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "keywords": [
+    "pii",
+    "masking",
+    "security",
+    "llm",
+    "ai",
+    "node"
+  ],
+  "author": "GlassLM",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/AkshaySasi/GlassLM.git"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@glasslm/core": "file:../core"
+  },
+  "devDependencies": {
+    "typescript": "^5.0.0",
+    "@types/node": "^20.0.0"
+  }
+}
