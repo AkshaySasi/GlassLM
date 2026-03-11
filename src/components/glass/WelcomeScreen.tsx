@@ -63,7 +63,7 @@ export function WelcomeScreen({ hasProviders }: WelcomeScreenProps) {
                         <FirstTimeGuide />
                     </div>
 
-                    <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-8 w-full max-w-md mx-auto">
+                    <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-8 w-full max-w-2xl mx-auto">
                         <Link
                             to="/how-it-works"
                             className="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors font-mono"
