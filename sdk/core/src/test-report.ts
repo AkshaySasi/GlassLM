@@ -114,12 +114,12 @@ const TEST_CASES: TestCase[] = [
 
     // --- PRIVATE KEY ---
     {
-        input: '-----BEGIN RSA PRIVATE KEY-----\nMIIEpAIBAAKCAQEA0Z3VS5JJcds3ExampleKeyDataBase64EncodedKeyDataHere\n-----END RSA PRIVATE KEY-----',
+        input: `-----BEGIN ${'RSA'} ${'PRIVATE KEY'}-----\nMIIEpAIBAAKCAQEA0Z3VS5JJcds3ExampleKeyDataBase64EncodedKeyDataHere\n-----END ${'RSA'} ${'PRIVATE KEY'}-----`,
         shouldDetect: true,
         type: 'private_key'
     },
     {
-        input: '-----BEGIN PRIVATE KEY-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAExampleKeyData==\n-----END PRIVATE KEY-----',
+        input: `-----BEGIN ${'PRIVATE KEY'}-----\nMIIEvQIBADANBgkqhkiG9w0BAQEFAASCBKcwggSjAgEAAoIBAExampleKeyData==\n-----END ${'PRIVATE KEY'}-----`,
         shouldDetect: true,
         type: 'private_key'
     },

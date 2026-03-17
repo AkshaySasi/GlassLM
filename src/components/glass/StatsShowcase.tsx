@@ -44,7 +44,7 @@ export function StatsShowcase() {
                         {realisticBadges.map((badge, idx) => (
                             <div
                                 key={idx}
-                                className="flex flex-col items-center justify-center p-4 md:p-6 rounded-xl bg-white/5 border border-white/10 hover:bg-white/10 hover:border-primary/30 transition-all duration-300 group"
+                                className="glass-card flex flex-col items-center justify-center p-4 md:p-6 rounded-xl md:rounded-2xl group hover:scale-[1.05] hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 cursor-pointer"
                             >
                                 <div className="mb-3 p-2.5 rounded-full bg-primary/10 group-hover:scale-110 group-hover:bg-primary/20 transition-all duration-300">
                                     {badgeIcons[badge.label] || <ShieldCheck className="w-4 h-4 text-primary" />}
