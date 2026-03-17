@@ -3,6 +3,7 @@ import { Eye, Cpu, Lock, HelpCircle, Code2 } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import glasslmLogo from '@/assets/glasslm-logo.webp';
 import { FirstTimeGuide } from './FirstTimeGuide';
+import { StatsShowcase } from './StatsShowcase';
 
 interface WelcomeScreenProps {
     hasProviders: boolean;
@@ -155,6 +156,11 @@ export function WelcomeScreen({ hasProviders }: WelcomeScreenProps) {
                         ))}
                     </div>
                 </div>
+            </div>
+
+            {/* Verification Stats Section - Full Width */}
+            <div className="w-full py-8 md:py-12 pb-32 md:pb-48">
+                <StatsShowcase />
             </div>
         </>
     );

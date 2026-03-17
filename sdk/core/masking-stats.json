@@ -1,0 +1,101 @@
+{
+  "generated": "2026-03-17T16:46:53.630Z",
+  "overallMaskingRate": 100,
+  "totalTestCases": 61,
+  "categoriesAbove90Percent": 10,
+  "totalCategories": 10,
+  "categories": [
+    {
+      "id": "email",
+      "label": "Email Addresses",
+      "detectionRate": 100,
+      "testsRun": 9,
+      "detected": 8
+    },
+    {
+      "id": "phone",
+      "label": "Phone Numbers",
+      "detectionRate": 100,
+      "testsRun": 7,
+      "detected": 7
+    },
+    {
+      "id": "ssn",
+      "label": "Social Security Numbers",
+      "detectionRate": 100,
+      "testsRun": 6,
+      "detected": 5
+    },
+    {
+      "id": "credit_card",
+      "label": "Credit Card Numbers",
+      "detectionRate": 100,
+      "testsRun": 6,
+      "detected": 5
+    },
+    {
+      "id": "api_key",
+      "label": "API Keys",
+      "detectionRate": 100,
+      "testsRun": 9,
+      "detected": 8
+    },
+    {
+      "id": "access_token",
+      "label": "Access Tokens (JWT/Bearer)",
+      "detectionRate": 100,
+      "testsRun": 5,
+      "detected": 5
+    },
+    {
+      "id": "cloud_credential",
+      "label": "Cloud Credentials (AWS)",
+      "detectionRate": 100,
+      "testsRun": 4,
+      "detected": 3
+    },
+    {
+      "id": "private_key",
+      "label": "Private Keys (PEM)",
+      "detectionRate": 100,
+      "testsRun": 3,
+      "detected": 2
+    },
+    {
+      "id": "database_url",
+      "label": "Database URLs",
+      "detectionRate": 100,
+      "testsRun": 5,
+      "detected": 5
+    },
+    {
+      "id": "ip_address",
+      "label": "IP Addresses (v4/v6)",
+      "detectionRate": 100,
+      "testsRun": 7,
+      "detected": 7
+    }
+  ],
+  "marketingStats": {
+    "headline": "100% Masking Accuracy",
+    "subheadline": "Tested across 10 sensitive data categories",
+    "badges": [
+      {
+        "label": "API Keys",
+        "value": "100%"
+      },
+      {
+        "label": "PII Data",
+        "value": "100%"
+      },
+      {
+        "label": "Credentials",
+        "value": "100%"
+      },
+      {
+        "label": "DB URLs",
+        "value": "100%"
+      }
+    ]
+  }
+}

@@ -1,0 +1,333 @@
+﻿node.exe : 9:29:39 pm [vite] warning: 
+`optimizeDeps.esbuildOptions` option was specified 
+by "vite:react-swc" plugin. This option is 
+deprecated, please use 
+`optimizeDeps.rolldownOptions` instead.
+At C:\Program Files\nodejs\npx.ps1:29 char:3
++   & $NODE_EXE $NPX_CLI_JS $args
++   ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+    + CategoryInfo          : NotSpecified: (9:    
+29:39 pm [vit...tions` instead.:String) [],     
+RemoteException
+    + FullyQualifiedErrorId : NativeCommandErro    
+r
+ 
+
+ RUN  v4.1.0 C:/Users/91830/Desktop/appp/GlassLM/GlassLM/sdk/core
+
+ Γ¥» src/masker.test.ts (84 tests | 11 failed) 64ms
+     Γ£ô masks email: user@example.com 5ms
+     Γ£ô masks email: first.last+tag@sub.domain.org 2ms
+     Γ£ô masks email: admin@glasslm.io 1ms
+     Γ£ô masks email: info@company.co.uk 0ms
+     Γ£ô masks email: test_user123@my-site.net 1ms
+     Γ£ô masks email: no-reply@finance.bank.com 0ms
+     Γ£ô masks email: john.doe@gmail.com 1ms
+     Γ£ô masks email: jane_doe@yahoo.co.in 0ms
+     Γ£ô does NOT mask non-email text containing @ 1ms
+     ├ù masks phone (E.164 with area code) 11ms
+     Γ£ô masks phone (dashed format) 1ms
+     Γ£ô masks phone (plain 10-digit) 0ms
+     ├ù masks phone (parenthesised area code) 1ms
+     Γ£ô masks phone (1- prefix) 0ms
+     Γ£ô masks phone (dot-separated) 0ms
+     Γ£ô masks SSN: 123-45-6789 0ms
+     Γ£ô masks SSN: 000-00-0001 0ms
+     Γ£ô masks SSN: 999-99-9999 0ms
+     Γ£ô masks SSN: 987-65-4321 0ms
+     Γ£ô does NOT mask partial SSN-like patterns (4 digits-2-4) 0ms
+     ├ù masks valid Visa (plain) 1ms
+     Γ£ô masks valid Visa (spaced) 0ms
+     ├ù masks valid Mastercard 1ms
+     Γ£ô masks valid Amex 15-digit 0ms
+     ├ù masks valid Discover 2ms
+     Γ£ô masks valid Visa (dashed) 0ms
+     Γ£ô does NOT mask random 16-digit number that fails Luhn 0ms
+     Γ£ô Luhn algorithm correctly validates known good card 0ms
+     Γ£ô Luhn algorithm rejects invalid card 0ms
+     Γ£ô masks sk- prefixed API key 0ms
+     ├ù masks pk- prefixed API key 1ms
+     Γ£ô masks "API KEY: ..." assignment format 2ms
+     Γ£ô masks api_key=... environment variable format 0ms
+     ├ù masks "My API key is ..." context phrase 1ms
+     Γ£ô masks api-key: header assignment 0ms
+     ├ù masks Stripe-style key (sk_live_...) 1ms
+     Γ£ô masks JWT token in message 1ms
+     Γ£ô masks bare JWT (no Bearer prefix) 0ms
+     Γ£ô masks Bearer token (non-JWT) 0ms
+     Γ£ô masks OAuth Token header 0ms
+     Γ£ô masks AWS Access Key ID (AKIA...) 0ms
+     Γ£ô masks another valid AWS key format 0ms
+     Γ£ô does NOT mask partial AKIA-like strings (under 20 chars) 0ms
+     ├ù masks RSA private key PEM block 1ms
+     Γ£ô masks generic PRIVATE KEY PEM block 0ms
+     Γ£ô does NOT mask BEGIN CERTIFICATE (not a private key) 0ms
+     Γ£ô masks PostgreSQL connection string 0ms
+     Γ£ô masks Postgres shorthand connection string 0ms
+     Γ£ô masks MySQL connection string 0ms
+     Γ£ô masks MongoDB connection string 0ms
+     ├ù masks MongoDB SRV connection string 1ms
+     Γ£ô masks IPv4: 192.168.1.1 0ms
+     Γ£ô masks IPv4: 10.0.0.1 0ms
+     Γ£ô masks IPv4: 172.16.254.1 0ms
+     Γ£ô masks IPv4: 8.8.8.8 0ms
+     Γ£ô masks IPv4: 255.255.255.0 0ms
+     Γ£ô masks IPv6 address 0ms
+     Γ£ô does NOT mask a version number like 1.2.3.4 in a software context 1ms
+     Γ£ô masks full name in "My name is..." context 4ms
+     Γ£ô masks name in "patient name: ..." medical context 1ms
+     Γ£ô does NOT crash on proper nouns without sensitive context 0ms
+     Γ£ô round-trips: "Contact user@glasslm.io for support" 0ms
+     Γ£ô round-trips: "Call +1 (800) 555-1234 now" 0ms
+     Γ£ô round-trips: "SSN: 123-45-6789" 0ms
+     Γ£ô round-trips: "Server IP: 192.168.1.1" 0ms
+     Γ£ô round-trips: "sk-abcdefghijklmnop1234567890" 0ms
+     Γ£ô round-trips: "DB: postgresql://admin:secret@host/db" 0ms
+     Γ£ô round-trips: "AWS key: AKIAIOSFODNN7EXAMPLE" 0ms
+     Γ£ô masks multiple types in one message 0ms
+     Γ£ô getMaskedItemsByType groups items correctly 0ms
+     Γ£ô handles empty string without error 1ms
+     Γ£ô handles whitespace-only string 0ms
+     Γ£ô handles text with no sensitive content 0ms
+     Γ£ô handles repeated sensitive value with single placeholder 0ms
+     Γ£ô handles very long input without crashing 1ms
+     Γ£ô handles mixed case email 0ms
+     Γ£ô does not double-mask already-masked text 0ms
+     Γ£ô does NOT mask version numbers 0ms
+     Γ£ô does NOT mask short strings as API keys 0ms
+     Γ£ô does NOT mask a normal english sentence as names incorrectly without context 0ms
+     Γ£ô does NOT mask postal code as SSN 0ms
+     ├ù masks a developer bug report with API key leak 2ms
+     Γ£ô masks a customer support message with PII 1ms
+     Γ£ô masks a CI/CD config dump with multiple secrets 0ms
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ» Failed Tests 11 
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+
+ FAIL  src/masker.test.ts > Phone Number Masking > 
+masks phone (E.164 with area code)
+ FAIL  src/masker.test.ts > Phone Number Masking > 
+masks phone (parenthesised area code)
+AssertionError: expected false to be true // 
+Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+ Γ¥» src/masker.test.ts:72:63
+     70|         it(`masks phone (${label})`, () 
+=> {
+     71|             const { maskedText, 
+maskedItems } = masked(input);
+     72|             expect(maskedItems.some(i => 
+i.type === 'phone')).toBe(truΓÇª
+       |                                           
+                    ^
+     73|             
+expect(containsPlaceholder(maskedText, 
+'PHONE')).toBe(trueΓÇª
+     74|         });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[1/11]ΓÄ»
+
+ FAIL  src/masker.test.ts > Credit Card Masking > 
+masks valid Visa (plain)
+ FAIL  src/masker.test.ts > Credit Card Masking > 
+masks valid Mastercard
+ FAIL  src/masker.test.ts > Credit Card Masking > 
+masks valid Discover
+AssertionError: expected false to be true // 
+Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+ Γ¥» src/masker.test.ts:125:65
+    123|             if (luhnOk) {
+    124|                 expect(maskedItems.some(i 
+=> i.type === 'credit_card')ΓÇª
+    125|                 
+expect(containsPlaceholder(maskedText, 
+'CARD')).toBe(tΓÇª
+       |                                           
+                      ^
+    126|             }
+    127|         });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[2/11]ΓÄ»
+
+ FAIL  src/masker.test.ts > API Key Masking > 
+masks pk- prefixed API key
+AssertionError: expected false to be true // 
+Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+ Γ¥» src/masker.test.ts:156:61
+    154|     it('masks pk- prefixed API key', () 
+=> {
+    155|         const { maskedText, maskedItems } 
+= masked('Public key: pk-livΓÇª
+    156|         expect(maskedItems.some(i => 
+i.type === 'api_key')).toBe(true);
+       |                                           
+                  ^
+    157|     });
+    158|
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[3/11]ΓÄ»
+
+ FAIL  src/masker.test.ts > API Key Masking > 
+masks "My API key is ..." context phrase
+AssertionError: expected false to be true // 
+Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+ Γ¥» src/masker.test.ts:172:61
+    170|     it('masks "My API key is ..." context 
+phrase', () => {
+    171|         const { maskedText, maskedItems } 
+= masked('My API key is AbCdΓÇª
+    172|         expect(maskedItems.some(i => 
+i.type === 'api_key')).toBe(true);
+       |                                           
+                  ^
+    173|         expect(maskedText).not.toContain('
+AbCdEfGhIjKlMnOp');
+    174|     });
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[4/11]ΓÄ»
+
+ FAIL  src/masker.test.ts > API Key Masking > 
+masks Stripe-style key (sk_live_...)
+AssertionError: expected 
+'sk_live_AbCdEfGhIjKlMnOpQrSt' not to contain 
+'sk_live_AbCdEfGhIjKlMnOpQrSt'
+ Γ¥» src/masker.test.ts:184:32
+    182|         const { maskedText, maskedItems } 
+= masked('sk_live_AbCdEfGhIjΓÇª
+    183|         // Either caught by sk- prefix or 
+generic long-string pattern
+    184|         expect(maskedText).not.toContain('
+sk_live_AbCdEfGhIjKlMnOpQrStΓÇª
+       |                                ^
+    185|     });
+    186| });
+
+ Test Files  1 failed (1)
+      Tests  11 failed | 73 passed (84)
+   Start at  21:29:39
+   Duration  1.31s (transform 205ms, setup 0ms, import 536ms, tests 64ms, environment 0ms)
+
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[5/11]ΓÄ»
+
+ FAIL  src/masker.test.ts > Private Key Masking > 
+masks RSA private key PEM block
+AssertionError: expected false to be true // 
+Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+ Γ¥» src/masker.test.ts:258:64
+    256|         const { maskedText, maskedItems } 
+= masked(`Here is my key:\n$ΓÇª
+    257|         expect(maskedItems.some(i => 
+i.type === 'private_key')).toBe(tΓÇª
+    258|         
+expect(containsPlaceholder(maskedText, 
+'PRIVATE_KEY')).toBe(trΓÇª
+       |                                           
+                     ^
+    259|     });
+    260|
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[6/11]ΓÄ»
+
+ FAIL  src/masker.test.ts > Database URL Masking > 
+masks MongoDB SRV connection string
+AssertionError: expected false to be true // 
+Object.is equality
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- true[39m
+[31m+ false[39m
+
+ Γ¥» src/masker.test.ts:287:70
+    285|         it(`masks ${label} connection 
+string`, () => {
+    286|             const { maskedText, 
+maskedItems } = masked(`DB_URL=${url}`ΓÇª
+    287|             expect(maskedItems.some(i => 
+i.type === 'database_url')).tΓÇª
+       |                                           
+                           ^
+    288|             
+expect(maskedText).not.toContain(url);
+    289|             
+expect(containsPlaceholder(maskedText, 
+'DB_URL')).toBe(truΓÇª
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[7/11]ΓÄ»
+
+ FAIL  src/masker.test.ts > Real-World Scenario 
+Tests > masks a developer bug report with API key 
+leak
+AssertionError: expected '\nHi, I am getting 401 
+errors. [[NAMEΓÇª' not to contain 'sk-live_'
+
+[32m- Expected[39m
+[31m+ Received[39m
+
+[32m- sk-live_[39m
+[31m+[39m
+[31m+ Hi, I am getting 401 errors. [[NAME_1]] API 
+key is sk-live_AbcDefGhiJklMnoPqrStu[39m
+[31m+ and my DB URL is [[DB_URL_1]][39m
+[31m+ Server: [[IP_1]][39m
+[31m+ Please help![39m
+[31m+         [39m
+
+ Γ¥» src/masker.test.ts:500:32
+    498|         `;
+    499|         const { maskedText, maskedItems } 
+= autoMask(report);
+    500|         
+expect(maskedText).not.toContain('sk-live_');
+       |                                ^
+    501|         
+expect(maskedText).not.toContain('postgresql://');
+    502|         
+expect(maskedText).not.toContain('192.168.10.5');
+
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»
+ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»ΓÄ»[8/11]ΓÄ»
+

@@ -6,7 +6,10 @@
     "types": "dist/index.d.ts",
     "scripts": {
         "build": "tsc",
-        "test": "echo \"Error: no test specified\" && exit 1"
+        "test": "vitest run",
+        "test:watch": "vitest",
+        "test:coverage": "vitest run --coverage",
+        "report": "npx tsx src/test-report.ts"
     },
     "keywords": [
         "pii",
@@ -25,6 +28,8 @@
         "access": "public"
     },
     "devDependencies": {
-        "typescript": "^5.0.0"
+        "tsx": "^4.21.0",
+        "typescript": "^5.0.0",
+        "vitest": "^4.1.0"
     }
 }

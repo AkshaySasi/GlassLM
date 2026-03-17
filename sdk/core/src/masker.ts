@@ -12,15 +12,14 @@ type PatternDef = {
 
 const PATTERNS: PatternDef[] = [
     // High-confidence API keys with known prefixes
-    { type: 'api_key', pattern: /\b(sk|pk)[-_][a-zA-Z0-9]{20,}/g, prefix: 'API_KEY', confidence: 'high' },
+    { type: 'api_key', pattern: /\b(sk|pk)[-_][a-zA-Z0-9_]{20,}/g, prefix: 'API_KEY', confidence: 'high' },
 
     // Context-aware API key detection (catches "My API key is abc123")
     {
         type: 'api_key',
-        pattern: /\b(?:my|the|your|this|our)\s+(?:app(?:lication)?\s+)?api\s+key\s+(?:is|:|=)?\s*['"']?([a-zA-Z0-9]{16,})['"']?/gi,
+        pattern: /\b(?:my|the|your|this|our)\s+(?:app(?:lication)?\s+)?api\s+key\s+(?:is|:|=)?\s*['"']?([a-zA-Z0-9_-]{16,})['"']?/gi,
         prefix: 'API_KEY',
-        confidence: 'medium',
-        requireContext: true
+        confidence: 'high'
     },
 
     // Simple flexible API KEY pattern (catches "have an API KEY xyz", "got API KEY abc", etc.)
@@ -46,11 +45,11 @@ const PATTERNS: PatternDef[] = [
     { type: 'access_token', pattern: /\beyJ[a-zA-Z0-9_-]+\.eyJ[a-zA-Z0-9_-]+\.[a-zA-Z0-9_-]+/g, prefix: 'JWT', confidence: 'high' },
 
     // Bearer tokens
-    { type: 'access_token', pattern: /\b(Bearer|Token)[\s:]+[a-zA-Z0-9_-]{20,}/gi, prefix: 'TOKEN', confidence: 'high' },
+    { type: 'access_token', pattern: /\b(Bearer|Token)[\s:]+[a-zA-Z0-9_.-]{20,}/gi, prefix: 'TOKEN', confidence: 'high' },
     { type: 'cloud_credential', pattern: /\bAKIA[0-9A-Z]{16}\b/g, prefix: 'AWS_KEY', confidence: 'high' }, // AWS Access Key
-    { type: 'cloud_credential', pattern: /\b[a-zA-Z0-9+/]{40}\b/g, prefix: 'AWS_SECRET', confidence: 'medium' }, // AWS Secret (40 chars base64)
-    { type: 'private_key', pattern: /-----BEGIN\s+(?:RSA\s+)?PRIVATE\s+KEY-----[\s\S]{50,}?-----END\s+(?:RSA\s+)?PRIVATE\s+KEY-----/g, prefix: 'PRIVATE_KEY', confidence: 'high' },
-    { type: 'database_url', pattern: /\b(?:mongodb|postgresql|postgres|mysql):\/\/[^\s'"]+/gi, prefix: 'DB_URL', confidence: 'high' },
+    { type: 'cloud_credential', pattern: /(?<![a-zA-Z0-9+/])[a-zA-Z0-9+/]{40}(?![a-zA-Z0-9+/])/g, prefix: 'AWS_SECRET', confidence: 'medium' }, // AWS Secret (40 chars base64)
+    { type: 'private_key', pattern: /-----BEGIN\s+(?:RSA\s+)?PRIVATE\s+KEY-----[\s\S]+?-----END\s+(?:RSA\s+)?PRIVATE\s+KEY-----/g, prefix: 'PRIVATE_KEY', confidence: 'high' },
+    { type: 'database_url', pattern: /\b(?:mongodb(?:\+srv)?|postgresql|postgres|mysql):\/\/[^\s'"]+/gi, prefix: 'DB_URL', confidence: 'high' },
 
     // IP Addresses
     { type: 'ip_address', pattern: /\b(?:(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.){3}(?:25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\b/g, prefix: 'IP', confidence: 'high' },
@@ -58,7 +57,7 @@ const PATTERNS: PatternDef[] = [
 
     // Original patterns
     { type: 'email', pattern: /[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}/g, prefix: 'EMAIL', confidence: 'high' },
-    { type: 'phone', pattern: /(?:\+?1[-.\\s]?)?(?:\([0-9]{3}\)|[0-9]{3})[-.\\s]?[0-9]{3}[-.\\s]?[0-9]{4}/g, prefix: 'PHONE', confidence: 'high' },
+    { type: 'phone', pattern: /(?<=^|[\s:])(?:\+?1[-\.\s]?)?(?:\([0-9]{3}\)|[0-9]{3})[-\.\s]?[0-9]{3}[-\.\s]?[0-9]{4}(?=$|[\s.,:]|\b)/g, prefix: 'PHONE', confidence: 'high' },
     { type: 'ssn', pattern: /\b\d{3}-\d{2}-\d{4}\b/g, prefix: 'SSN', confidence: 'high' },
     // Credit card with Luhn validation
     {
