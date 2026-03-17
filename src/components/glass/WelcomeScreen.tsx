@@ -74,7 +74,7 @@ export function WelcomeScreen({ hasProviders }: WelcomeScreenProps) {
                         </Link>
 
                         <a
-                            href="https://microsoftedge.microsoft.com/addons"
+                            href="https://microsoftedge.microsoft.com/addons/detail/glasslm-a-glassbox-lay/ggigmidkjafhhcimoecdhebocpobland"
                             target="_blank"
                             rel="noopener noreferrer"
                             className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all duration-300 font-mono"
