@@ -1,5 +1,5 @@
 import { useState, useEffect } from 'react';
-import { Eye, Cpu, Lock, HelpCircle, Code2 } from 'lucide-react';
+import { Eye, Cpu, Lock, HelpCircle, Code2, Users } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import glasslmLogo from '@/assets/glasslm-logo.webp';
 import { FirstTimeGuide } from './FirstTimeGuide';
@@ -92,6 +92,16 @@ export function WelcomeScreen({ hasProviders }: WelcomeScreenProps) {
                             <Code2 className="w-4 h-4" />
                             For Developers
                         </Link>
+
+                        <a
+                            href="https://app.glasslm.space/signup"
+                            target="_blank"
+                            rel="noopener noreferrer"
+                            className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-full btn-crystal text-white font-mono font-semibold shadow-lg shadow-primary/20"
+                        >
+                            <Users className="w-4 h-4" />
+                            For Teams →
+                        </a>
                     </div>
                 </div>
             </div>

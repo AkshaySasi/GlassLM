@@ -23,6 +23,14 @@ dist-ssr
 *.sln
 *.sw?
 
+# Backend lives in a separate private repo
+backend/
+
+# Environment variables — NEVER commit real .env files
+.env
+.env.*
+!.env.example
+
 # SDK builds
 sdk/python/build/
 sdk/python/dist/

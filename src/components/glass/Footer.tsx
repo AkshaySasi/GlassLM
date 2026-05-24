@@ -23,6 +23,17 @@ export function Footer() {
                             <Link to="/developers" className="block text-sm text-muted-foreground hover:text-primary transition-colors font-semibold text-primary/80">
                                 Developers / SDKs
                             </Link>
+                            <Link to="/pricing" className="block text-sm text-muted-foreground hover:text-primary transition-colors">
+                                Pricing
+                            </Link>
+                            <a
+                                href="https://app.glasslm.space"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="block text-sm font-semibold text-primary hover:text-primary/80 transition-colors"
+                            >
+                                Team Dashboard →
+                            </a>
                         </div>
                     </div>
 
