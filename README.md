@@ -3,12 +3,12 @@
 <img src="https://capsule-render.vercel.app/api?type=waving&color=7c3aed&height=200&section=header&text=GlassLM&fontSize=80&fontColor=ffffff&fontAlignY=38&desc=A%20Glass-Box%20Layer%20For%20Your%20AI&descAlignY=58&descColor=c4b5fd&animation=fadeIn" width="100%" />
 
 <a href="https://git.io/typing-svg">
-  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=22&pause=1000&color=A855F7&center=true&vCenter=true&random=false&width=600&lines=Zero+PII+leaks.+Zero+surprise+bills.;Your+sensitive+data+never+reaches+the+AI.;35%2B+pattern+types.+Luhn+validated.;Open+source+%E2%80%94+audit+every+line." alt="Typing SVG" />
+  <img src="https://readme-typing-svg.demolab.com?font=JetBrains+Mono&weight=600&size=22&pause=1000&color=A855F7&center=true&vCenter=true&random=false&width=600&lines=Your+sensitive+data+never+reaches+the+AI.;35%2B+PII+pattern+types.+Luhn+validated.;Works+on+ChatGPT%2C+Claude%2C+Gemini+%26+more.;Open+source+%E2%80%94+audit+every+line." alt="Typing SVG" />
 </a>
 
 <br/>
 
-[![Version](https://img.shields.io/badge/version-2.0.0-a855f7?style=for-the-badge&logo=semver&logoColor=white)](https://github.com/AkshaySasi/GlassLM/releases)
+[![Version](https://img.shields.io/badge/version-1.0.0-a855f7?style=for-the-badge&logo=semver&logoColor=white)](https://github.com/AkshaySasi/GlassLM/releases)
 [![License](https://img.shields.io/badge/license-MIT-7c3aed?style=for-the-badge)](LICENSE)
 [![Stars](https://img.shields.io/github/stars/AkshaySasi/GlassLM?style=for-the-badge&color=a855f7&logo=github)](https://github.com/AkshaySasi/GlassLM/stargazers)
 [![TypeScript](https://img.shields.io/badge/TypeScript-5.x-a855f7?style=for-the-badge&logo=typescript&logoColor=white)](https://www.typescriptlang.org/)
@@ -20,123 +20,27 @@
 
 ## What is GlassLM?
 
-GlassLM is an **AI security + spend control gateway** — a transparent proxy that sits between your team and every AI provider. It automatically masks PII before requests leave your device, enforces org policies, and controls token spend.
+GlassLM is a **privacy-focused AI chat app** that automatically detects and masks sensitive data before it ever leaves your device. Paste anything — API keys, emails, credit cards, Aadhaar numbers — and GlassLM replaces them with safe placeholders before sending to the AI. The AI never sees your real data.
 
 ```
-Your App  →  GlassLM Gateway  →  OpenAI / Claude / Gemini / Mistral / ...
-                 │
-                 ├── PII masked (35+ types, Luhn-validated)
-                 ├── Prompt injection blocked
-                 ├── Policy enforced (warn / block / redact)
-                 └── Token budget enforced — no surprise bills
+You type:   "My email is john@corp.com and API key is sk-abc123..."
+AI sees:    "My email is [[EMAIL_1]] and API key is [[API_KEY_2]]..."
+You get:    Full AI response with your real values restored
 ```
 
-> **One line of code.** Change `baseURL` to `gateway.glasslm.space`. Done.
+> **Your data never leaves your device in plaintext. Ever.**
 
 ---
 
-## ✨ What's new in v2.0
+## ✨ Features
 
-| Feature | Description |
-|---|---|
-| 🛡️ **SOTA Masker** | 35+ pattern types — AI keys, Indian IDs (Aadhaar/PAN/IFSC/UPI), cloud creds, code secrets |
-| 💸 **Spend Control** | Per-org and per-user token budgets. Email alerts at threshold. Hard block at limit. |
-| 🚫 **Prompt Injection Guard** | 5 attack categories — OVERRIDE, JAILBREAK, EXFIL, INDIRECT, XML_INJECT |
-| 🔒 **Context-word Boosting** | `"api_key": "abc"` → high confidence. Plain `abc` alone → ignored. |
-| 🇮🇳 **India-first** | Only masker on the market with Aadhaar, PAN, IFSC, UPI, GST patterns |
-| 📊 **Team Dashboard** | Per-user risk scores, token spend, compliance exports (GDPR/SOC2/HIPAA/ISO27001) |
-
----
-
-## 🗂 Repository structure
-
-```
-glasslm/
-├── src/                        # Main React app (glasslm.space)
-│   ├── components/glass/       # UI components
-│   ├── lib/glass/              # Core masking engine (client-side)
-│   └── pages/                  # App routes
-│
-├── backend/                    # Hono + Node.js API server (private repo)
-│   ├── src/gateway/            # AI provider proxy
-│   │   └── providers/          # openai, anthropic, google, mistral, deepseek, grok
-│   ├── src/middleware/
-│   │   ├── masker.ts           # SOTA PII masker (35+ patterns)
-│   │   └── promptGuard.ts      # Prompt injection detector
-│   └── src/api/                # REST endpoints
-│
-├── sdk/
-│   ├── core/                   # Framework-agnostic masking engine
-│   ├── node/                   # Node.js SDK + GatewayClient
-│   ├── python/                 # Python SDK
-│   └── web/                    # Browser SDK
-│
-└── dashboard/                  # Team dashboard (app.glasslm.space)
-    └── src/pages/              # Dashboard, Budgets, Policies, Reports...
-```
-
----
-
-## 🚀 Quick start
-
-### Browser extension
-
-Install from the [Edge Add-ons store](https://microsoftedge.microsoft.com/addons/detail/glasslm-a-glassbox-lay/ggigmidkjafhhcimoecdhebocpobland) — works on ChatGPT, Claude, Gemini, Perplexity, and 20+ AI sites.
-
-### Node.js SDK
-
-```bash
-npm install @glasslm/node
-```
-
-```ts
-import OpenAI from 'openai'
-import { getGatewayConfig } from '@glasslm/node'
-
-// Drop-in: just swap the config into your existing OpenAI client
-const openai = new OpenAI(getGatewayConfig({
-  glasslmKey: 'glm_...',      // your GlassLM API key
-  providerKey: 'sk-...',      // your OpenAI / Anthropic / etc. key
-  provider: 'openai',
-}))
-
-// Works exactly like before — PII masked transparently
-const res = await openai.chat.completions.create({
-  model: 'gpt-4o-mini',
-  messages: [{ role: 'user', content: 'My SSN is 123-45-6789. Help me...' }],
-})
-// → sent as: 'My SSN is [[SSN_1]]. Help me...'
-// → response unmasked before reaching your code
-```
-
-### Or use the standalone client (no OpenAI SDK needed)
-
-```ts
-import { GatewayClient } from '@glasslm/node'
-
-const client = new GatewayClient({
-  glasslmKey: 'glm_...',
-  providerKey: 'sk-...',
-  provider: 'anthropic',
-})
-
-const res = await client.chat({
-  messages: [{ role: 'user', content: 'email is john@corp.com' }],
-})
-
-console.log(res.glasslm)
-// { masked: 1, riskScore: 30, policyAction: 'none' }
-```
-
-### Python SDK
-
-```python
-from glasslm import autoMask, unmask
-
-masked = autoMask("My API key is sk-abc123xyz and email is john@corp.com")
-print(masked.text)       # My API key is [[API_KEY_1]] and email is [[EMAIL_2]]
-print(masked.risk_score) # 75
-```
+- 🔒 **Auto-masking** — 35+ PII types detected and replaced automatically
+- 🇮🇳 **India-first** — Aadhaar, PAN, IFSC, UPI, GST patterns built-in
+- ✅ **Luhn validation** — credit card detection with checksum verification, not just regex
+- 🔑 **Credential detection** — API keys, JWTs, private keys, cloud credentials, DB URLs
+- 👁️ **Full transparency** — see exactly what gets masked before sending
+- 🧩 **Browser extension** — works on ChatGPT, Claude, Gemini, Perplexity and 20+ AI sites
+- 📦 **SDK** — Node.js, Python, and Web SDKs for developers
 
 ---
 
@@ -163,22 +67,63 @@ print(masked.risk_score) # 75
 
 ---
 
-## 🧱 Architecture
+## 🗂 Repository structure
 
 ```
-┌─────────────────────────────────────────────────────────┐
-│                    GlassLM Gateway                       │
-│                                                         │
-│  Request ──► Masker ──► Policy ──► Budget ──► Provider  │
-│                │           │          │                  │
-│              35+ NER    warn/block  token cap            │
-│             patterns    /redact    + alert               │
-│                │                                         │
-│  Response ◄── Unmasker ◄──────────────────────────────  │
-└─────────────────────────────────────────────────────────┘
+glasslm/
+├── src/                        # Main React app (glasslm.space)
+│   ├── components/glass/       # UI components
+│   ├── lib/glass/              # Core masking engine (client-side)
+│   ├── extension/              # Chrome/Edge browser extension
+│   └── pages/                  # App routes
+│
+└── sdk/
+    ├── core/                   # Framework-agnostic masking engine
+    ├── node/                   # Node.js SDK
+    ├── python/                 # Python SDK
+    └── web/                    # Browser SDK
+```
 
-Supported providers: OpenAI · Anthropic · Google Gemini
-                     Mistral · DeepSeek · xAI Grok
+---
+
+## 🚀 Quick start
+
+### Browser extension
+
+Install from the [Edge Add-ons store](https://microsoftedge.microsoft.com/addons/detail/glasslm-a-glassbox-lay/ggigmidkjafhhcimoecdhebocpobland) — works on ChatGPT, Claude, Gemini, Perplexity, and 20+ AI sites.
+
+### Web app
+
+Visit [glasslm.space](https://glasslm.space) — no install required.
+
+### Node.js SDK
+
+```bash
+npm install @glasslm/node
+```
+
+```ts
+import { GlassLM } from '@glasslm/node'
+import OpenAI from 'openai'
+
+const openai = new OpenAI({ apiKey: 'sk-...' })
+const glass = new GlassLM({ provider: openai })
+
+const res = await glass.chat({
+  messages: [{ role: 'user', content: 'My email is john@corp.com and SSN is 123-45-6789' }],
+})
+// Sent to AI as: 'My email is [[EMAIL_1]] and SSN is [[SSN_2]]'
+// Response returned with real values restored
+```
+
+### Python SDK
+
+```python
+from glasslm import autoMask, unmask
+
+masked = autoMask("My API key is sk-abc123xyz and email is john@corp.com")
+print(masked.text)       # My API key is [[API_KEY_1]] and email is [[EMAIL_2]]
+print(masked.risk_score) # 75
 ```
 
 ---
@@ -190,63 +135,37 @@ Supported providers: OpenAI · Anthropic · Google Gemini
 git clone https://github.com/AkshaySasi/GlassLM
 cd GlassLM
 
-# Install & run main app
+# Install & run
 npm install
-npm run dev          # → localhost:8080
-
-# Run dashboard
-cd dashboard
-npm install
-npm run dev          # → localhost:5174
-
-# Run backend (requires .env — see backend/.env.example)
-cd backend
-npm install
-npm run dev          # → localhost:3001
+npm run dev    # → localhost:8080
 ```
 
 ---
 
 ## 🔐 Privacy guarantees
 
-- **Zero message content stored** — only metadata (masked types, counts, risk score)
-- **API keys stored as SHA-256 hashes** — raw key shown once, never persisted
-- **User identity hashed** — SHA-256(email) in all event logs, never raw email
-- **TLS on all gateway connections** — no plaintext AI traffic
+- **Client-side only** — masking happens in your browser, nothing is sent to GlassLM servers
+- **No storage** — API keys stored in memory only, cleared on tab close
 - **Open source** — audit every line at github.com/AkshaySasi/GlassLM
+- **Zero telemetry** — no analytics, no tracking, no data collection
 
 ---
 
-## 📋 Changelog
+## 🧪 Testing
 
-### v2.0.0 — 2026-05-29
-- 🛡️ Masker rewritten: 10 → 35+ pattern types, Luhn validation, context-word boosting
-- 🇮🇳 Indian identifiers: Aadhaar, PAN, IFSC, UPI, GST
-- 💸 Spend Control: per-org + per-user token budgets, email alerts, hard-block at limit
-- 🚫 Prompt injection guard: 5 attack categories, 25+ pattern signatures
-- 🔑 New gateway providers: Google Gemini, Mistral, DeepSeek, xAI Grok
-- 📊 Team dashboard: Budgets page, compliance report downloads
-- 🔢 Risk score upgraded: 0-10 → 0-100 with diversity + volume bonuses
-- 📦 SDK: `GatewayClient` + `getGatewayConfig()` for drop-in OpenAI SDK usage
+The core `autoMask` engine is validated against 60+ real-world edge cases using Vitest.
 
-### v1.0.0 — 2025-12-01
-- Initial release: client-side PII masking, Chrome extension, 10 pattern types
-- Browser extension for ChatGPT, Claude, Gemini, Perplexity (20+ sites)
-- Node.js + Python SDK
+```bash
+cd sdk/core
+npm install
+npm test
+```
 
 ---
 
 ## 🤝 Contributing
 
 PRs welcome. Please open an issue first for significant changes.
-
-```bash
-# Run masking tests
-cd sdk/core && npm test
-
-# Type check
-npm run type-check
-```
 
 ---
 
