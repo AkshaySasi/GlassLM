@@ -4,7 +4,6 @@ import { ChatMessage as ChatMessageType, NetworkRequest, MaskedItem } from '@/li
 import { ConnectedProvider, AI_PROVIDERS } from '@/lib/glass/aiProviders';
 import { autoMask, unmask } from '@/lib/glass/masker';
 import { detectLeakage, LeakageWarning } from '@/lib/glass/leakageDetector';
-import { registerMaskedItems } from '@/lib/glass/placeholderRegistry';
 import { MaskingRules, DEFAULT_MASKING_RULES } from '@/lib/glass/maskingRules';
 import { ChatHeader } from '@/components/glass/ChatHeader';
 import { ChatMessage } from '@/components/glass/ChatMessage';
@@ -30,6 +29,65 @@ import {
 
 // Store leakage warnings per message
 type MessageLeakageMap = Record<string, LeakageWarning[]>;
+
+type ConversationMessage = { role: string; content: string };
+
+interface ProviderConfig {
+  getEndpoint: (apiKey: string) => string;
+  buildHeaders: (apiKey: string) => Record<string, string>;
+  buildBody: (messages: ConversationMessage[]) => unknown;
+  parseResponse: (data: unknown) => string;
+}
+
+// Factory for the four OpenAI-compatible providers (identical format, different endpoint/model)
+function openaiCompatible(endpoint: string, model: string): ProviderConfig {
+  return {
+    getEndpoint: () => endpoint,
+    buildHeaders: (key) => ({ Authorization: `Bearer ${key}`, 'Content-Type': 'application/json' }),
+    buildBody: (messages) => ({ model, messages }),
+    parseResponse: (data) => (data as { choices?: { message?: { content?: string } }[] })?.choices?.[0]?.message?.content ?? '',
+  };
+}
+
+const PROVIDER_CONFIGS: Record<string, ProviderConfig> = {
+  openai: openaiCompatible('https://api.openai.com/v1/chat/completions', 'gpt-4o-mini'),
+  grok:   openaiCompatible('https://api.x.ai/v1/chat/completions', 'grok-beta'),
+  deepseek: openaiCompatible('https://api.deepseek.com/v1/chat/completions', 'deepseek-chat'),
+  mistral:  openaiCompatible('https://api.mistral.ai/v1/chat/completions', 'mistral-small-latest'),
+
+  anthropic: {
+    getEndpoint: () => 'https://api.anthropic.com/v1/messages',
+    buildHeaders: (key) => ({
+      'x-api-key': key,
+      'Content-Type': 'application/json',
+      'anthropic-version': '2023-06-01',
+      'anthropic-dangerous-direct-browser-access': 'true',
+    }),
+    buildBody: (messages) => ({
+      model: 'claude-3-haiku-20240307',
+      max_tokens: 4096,
+      messages: messages.map(m => ({ role: m.role === 'assistant' ? 'assistant' : 'user', content: m.content })),
+    }),
+    parseResponse: (data) => (data as { content?: { text?: string }[] })?.content?.[0]?.text ?? '',
+  },
+
+  google: {
+    getEndpoint: (key) => {
+      const model = 'gemini-2.5-flash';
+      return `https://generativelanguage.googleapis.com/v1beta/models/${model}:generateContent?key=${key}`;
+    },
+    buildHeaders: () => ({ 'Content-Type': 'application/json' }),
+    buildBody: (messages) => ({
+      contents: messages.map(m => ({
+        role: m.role === 'assistant' ? 'model' : 'user',
+        parts: [{ text: m.content }],
+      })),
+    }),
+    parseResponse: (data) =>
+      (data as { candidates?: { content?: { parts?: { text?: string }[] } }[] })
+        ?.candidates?.[0]?.content?.parts?.[0]?.text ?? '',
+  },
+};
 
 const Index = () => {
   // Multi-chat session management
@@ -213,8 +271,8 @@ const Index = () => {
   };
 
   const handleSend = async (content: string, providerId: string) => {
-    // Step 1: Auto-mask the user's message
-    const { maskedText, maskedItems } = autoMask(content);
+    // Step 1: Auto-mask the user's message (respects user's masking rule preferences)
+    const { maskedText, maskedItems } = autoMask(content, maskingRules);
 
     // Create user message
     const userMessage: ChatMessageType = {
@@ -269,90 +327,12 @@ const Index = () => {
     // Add current masked message
     conversationHistory.push({ role: 'user', content: maskedText });
 
-    // Determine API endpoint and headers based on provider
-    let apiUrl = '';
-    let headers: Record<string, string> = {};
-    let body: any = {};
+    const config = PROVIDER_CONFIGS[providerId];
+    if (!config) throw new Error(`Unsupported provider: ${providerId}`);
 
-    switch (providerId) {
-      case 'openai':
-        apiUrl = 'https://api.openai.com/v1/chat/completions';
-        headers = {
-          'Authorization': `Bearer ${connectedProvider.apiKey}`,
-          'Content-Type': 'application/json',
-        };
-        body = {
-          model: 'gpt-4o-mini',
-          messages: conversationHistory,
-        };
-        break;
-      case 'anthropic':
-        apiUrl = 'https://api.anthropic.com/v1/messages';
-        headers = {
-          'x-api-key': connectedProvider.apiKey,
-          'Content-Type': 'application/json',
-          'anthropic-version': '2023-06-01',
-          'anthropic-dangerous-direct-browser-access': 'true',
-        };
-        body = {
-          model: 'claude-3-haiku-20240307',
-          max_tokens: 4096,
-          messages: conversationHistory.map(m => ({
-            role: m.role === 'assistant' ? 'assistant' : 'user',
-            content: m.content
-          })),
-        };
-        break;
-      case 'google':
-        // Default to the stable Gemini model name (no preview suffix)
-        const googleModel = (connectedProvider as any).preferredModel || 'gemini-2.5-flash';
-        apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/${googleModel}:generateContent?key=${connectedProvider.apiKey}`;
-        headers = {
-          'Content-Type': 'application/json',
-        };
-        body = {
-          contents: conversationHistory.map(m => ({
-            role: m.role === 'assistant' ? 'model' : 'user',
-            parts: [{ text: m.content }]
-          })),
-        };
-        break;
-      case 'grok':
-        apiUrl = 'https://api.x.ai/v1/chat/completions';
-        headers = {
-          'Authorization': `Bearer ${connectedProvider.apiKey}`,
-          'Content-Type': 'application/json',
-        };
-        body = {
-          model: 'grok-beta',
-          messages: conversationHistory,
-        };
-        break;
-      case 'deepseek':
-        apiUrl = 'https://api.deepseek.com/v1/chat/completions';
-        headers = {
-          'Authorization': `Bearer ${connectedProvider.apiKey}`,
-          'Content-Type': 'application/json',
-        };
-        body = {
-          model: 'deepseek-chat',
-          messages: conversationHistory,
-        };
-        break;
-      case 'mistral':
-        apiUrl = 'https://api.mistral.ai/v1/chat/completions';
-        headers = {
-          'Authorization': `Bearer ${connectedProvider.apiKey}`,
-          'Content-Type': 'application/json',
-        };
-        body = {
-          model: 'mistral-small-latest',
-          messages: conversationHistory,
-        };
-        break;
-      default:
-        throw new Error('Unknown provider');
-    }
+    const apiUrl = config.getEndpoint(connectedProvider.apiKey);
+    const headers = config.buildHeaders(connectedProvider.apiKey);
+    const body = config.buildBody(conversationHistory);
 
     // Log the network request for transparency
     const request: NetworkRequest = {
@@ -388,22 +368,7 @@ const Index = () => {
 
       const data = await response.json();
 
-      // Extract response based on provider
-      let aiResponseText = '';
-      switch (providerId) {
-        case 'openai':
-        case 'grok':
-        case 'deepseek':
-        case 'mistral':
-          aiResponseText = data.choices?.[0]?.message?.content || 'No response received';
-          break;
-        case 'anthropic':
-          aiResponseText = data.content?.[0]?.text || 'No response received';
-          break;
-        case 'google':
-          aiResponseText = data.candidates?.[0]?.content?.parts?.[0]?.text || 'No response received';
-          break;
-      }
+      const aiResponseText = config.parseResponse(data) || 'No response received';
 
       // Step 5: Unmask the response locally
       const unmaskedResponse = unmask(aiResponseText, maskedItems);

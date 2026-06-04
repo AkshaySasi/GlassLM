@@ -1,112 +1,94 @@
 import { MaskedItem } from './types';
 
-/**
- * Context keywords for improving detection accuracy
- */
-const CONTEXT_KEYWORDS = {
-    api_key: {
-        positive: ['key', 'api', 'token', 'secret', 'credential', 'auth', 'app'],
-        negative: ['array', 'index', 'hash', 'version', 'code'],
-    },
-    phone: {
-        positive: ['call', 'phone', 'mobile', 'number', 'contact', 'tel'],
-        negative: ['code', 'error', 'line', 'port', 'id'],
-    },
-    email: {
-        positive: ['email', 'mail', 'contact', 'address'],
-        negative: [],
-    },
-    credit_card: {
-        positive: ['card', 'payment', 'credit', 'debit', 'visa', 'mastercard'],
-        negative: ['id', 'number', 'code'],
-    },
+export const CONTEXT_WINDOW = 40; // chars before/after match — exported for testability
+
+const CONTEXT_KEYWORDS: Partial<Record<MaskedItem['type'], { positive: string[]; negative: string[] }>> = {
+  api_key: {
+    positive: ['key', 'api', 'token', 'secret', 'credential', 'auth', 'app', 'access', 'private'],
+    negative: ['array', 'index', 'hash', 'version', 'code', 'sample', 'example'],
+  },
+  access_token: {
+    positive: ['token', 'bearer', 'auth', 'secret', 'access', 'session'],
+    negative: ['example', 'sample', 'test', 'placeholder'],
+  },
+  private_key: {
+    positive: ['private', 'secret', 'pem', 'rsa', 'key', 'sign', 'decrypt'],
+    negative: ['public', 'example', 'sample'],
+  },
+  cloud_credential: {
+    positive: ['aws', 'amazon', 'cloud', 'iam', 'secret', 'access', 'credential'],
+    negative: ['example', 'sample', 'test'],
+  },
+  phone: {
+    positive: ['call', 'phone', 'mobile', 'number', 'contact', 'tel', 'fax', 'reach'],
+    negative: ['code', 'error', 'line', 'port', 'id', 'zip'],
+  },
+  email: {
+    positive: ['email', 'mail', 'contact', 'address', 'send', 'reach', 'inbox'],
+    negative: [],
+  },
+  credit_card: {
+    positive: ['card', 'payment', 'credit', 'debit', 'visa', 'mastercard', 'pay', 'charge'],
+    negative: ['id', 'code', 'order', 'item'],
+  },
+  ssn: {
+    positive: ['ssn', 'social', 'security', 'number', 'tax', 'identity'],
+    negative: ['code', 'id', 'reference'],
+  },
+  name: {
+    positive: ['name', 'called', 'person', 'user', 'contact', 'author', 'by', 'from', 'hi', 'dear'],
+    negative: ['company', 'product', 'brand', 'city', 'country', 'version'],
+  },
 };
 
-/**
- * Luhn algorithm for credit card validation
- */
 export function isValidLuhn(cardNumber: string): boolean {
-    const digits = cardNumber.replace(/\D/g, '');
+  const digits = cardNumber.replace(/\D/g, '');
+  if (digits.length < 13 || digits.length > 19) return false;
 
-    if (digits.length < 13 || digits.length > 19) {
-        return false;
+  let sum = 0;
+  let isEven = false;
+
+  for (let i = digits.length - 1; i >= 0; i--) {
+    let digit = parseInt(digits[i], 10);
+    if (isEven) {
+      digit *= 2;
+      if (digit > 9) digit -= 9;
     }
+    sum += digit;
+    isEven = !isEven;
+  }
 
-    let sum = 0;
-    let isEven = false;
-
-    for (let i = digits.length - 1; i >= 0; i--) {
-        let digit = parseInt(digits[i], 10);
-
-        if (isEven) {
-            digit *= 2;
-            if (digit > 9) {
-                digit -= 9;
-            }
-        }
-
-        sum += digit;
-        isEven = !isEven;
-    }
-
-    return sum % 10 === 0;
+  return sum % 10 === 0;
 }
 
-/**
- * Analyze context around a match to determine confidence
- */
 export function analyzeContext(
-    text: string,
-    matchIndex: number,
-    matchLength: number,
-    type: string
+  text: string,
+  matchIndex: number,
+  matchLength: number,
+  type: string,
 ): { confidence: 'high' | 'medium' | 'low'; score: number; keywords: string[] } {
-    const windowSize = 40; // characters before and after
-    const before = text.substring(Math.max(0, matchIndex - windowSize), matchIndex).toLowerCase();
-    const after = text.substring(matchIndex + matchLength, Math.min(text.length, matchIndex + matchLength + windowSize)).toLowerCase();
+  const before = text.substring(Math.max(0, matchIndex - CONTEXT_WINDOW), matchIndex).toLowerCase();
+  const after = text.substring(matchIndex + matchLength, Math.min(text.length, matchIndex + matchLength + CONTEXT_WINDOW)).toLowerCase();
 
-    let score = 0.5; // baseline
-    const foundKeywords: string[] = [];
+  const keywords = CONTEXT_KEYWORDS[type as MaskedItem['type']];
+  if (!keywords) return { confidence: 'medium', score: 0.5, keywords: [] };
 
-    const keywords = CONTEXT_KEYWORDS[type as keyof typeof CONTEXT_KEYWORDS];
-    if (!keywords) {
-        return { confidence: 'medium', score, keywords: [] };
+  let score = 0.5;
+  const foundKeywords: string[] = [];
+
+  for (const kw of keywords.positive) {
+    if (before.includes(kw) || after.includes(kw)) {
+      score += 0.15;
+      foundKeywords.push(kw);
     }
+  }
 
-    // Check positive keywords
-    for (const keyword of keywords.positive) {
-        if (before.includes(keyword) || after.includes(keyword)) {
-            score += 0.15;
-            foundKeywords.push(keyword);
-        }
+  for (const kw of keywords.negative) {
+    if (before.includes(kw) || after.includes(kw)) {
+      score -= 0.25;
     }
+  }
 
-    // Check negative keywords (reduce confidence)
-    for (const keyword of keywords.negative) {
-        if (before.includes(keyword) || after.includes(keyword)) {
-            score -= 0.25;
-        }
-    }
-
-    // Determine confidence level
-    const confidence = score >= 0.85 ? 'high' : score >= 0.6 ? 'medium' : 'low';
-
-    return { confidence, score, keywords: foundKeywords };
-}
-
-/**
- * Extract potential value from context-based patterns
- */
-export function extractFromContext(text: string, pattern: RegExp): Array<{ value: string; index: number }> {
-    const results: Array<{ value: string; index: number }> = [];
-    const matches = text.matchAll(pattern);
-
-    for (const match of matches) {
-        // Extract the value from capture group if it exists
-        const value = match[1] || match[0];
-        const index = match.index || 0;
-        results.push({ value, index });
-    }
-
-    return results;
+  const confidence = score >= 0.85 ? 'high' : score >= 0.6 ? 'medium' : 'low';
+  return { confidence, score, keywords: foundKeywords };
 }

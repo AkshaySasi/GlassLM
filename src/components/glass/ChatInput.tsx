@@ -1,4 +1,4 @@
-import { useState, useRef, KeyboardEvent } from 'react';
+import { useState, useRef, useEffect, KeyboardEvent } from 'react';
 import { Send, Paperclip, ChevronDown, Cpu, FlaskConical, Eye } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { ConnectedProvider, AI_PROVIDERS } from '@/lib/glass/aiProviders';
@@ -42,6 +42,7 @@ export function ChatInput({
   onPreviewClick,
 }: ChatInputProps) {
   const [input, setInput] = useState('');
+  const [debouncedInput, setDebouncedInput] = useState('');
   const [showPrivacyTest, setShowPrivacyTest] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
@@ -52,8 +53,13 @@ export function ChatInput({
 
   const hasProviders = connectedProviders.length > 0;
 
-  // Get masking preview for confidence indicator
-  const { maskedItems } = input.trim() ? autoMask(input) : { maskedItems: [] };
+  // Debounce masking preview — avoids running autoMask on every keystroke
+  useEffect(() => {
+    const timer = setTimeout(() => setDebouncedInput(input), 150);
+    return () => clearTimeout(timer);
+  }, [input]);
+
+  const { maskedItems } = debouncedInput.trim() ? autoMask(debouncedInput, maskingRules) : { maskedItems: [] };
 
   const handleSend = () => {
     if (!input.trim() || !selectedProviderId || isLoading) return;
