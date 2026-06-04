@@ -1,5 +1,5 @@
 import React from 'react';
-import { ShieldCheck, Database, Key, Fingerprint, Cloud } from 'lucide-react';
+import { ShieldCheck, Database, Key, Fingerprint, IndianRupee } from 'lucide-react';
 import statsData from '@/assets/masking-stats.json';
 
 export function StatsShowcase() {
@@ -8,7 +8,8 @@ export function StatsShowcase() {
     const badgeIcons: Record<string, React.ReactNode> = {
         'API Keys': <Key className="w-4 h-4 text-primary" />,
         'PII Data': <Fingerprint className="w-4 h-4 text-primary" />,
-        'Credentials': <Cloud className="w-4 h-4 text-primary" />,
+        'Credentials': <ShieldCheck className="w-4 h-4 text-primary" />,
+        'Indian IDs': <IndianRupee className="w-4 h-4 text-primary" />,
         'DB URLs': <Database className="w-4 h-4 text-primary" />,
     };
 
@@ -16,7 +17,7 @@ export function StatsShowcase() {
         { label: 'API Keys', value: '99.9%' },
         { label: 'PII Data', value: '99.5%' },
         { label: 'Credentials', value: '99.0%' },
-        { label: 'DB URLs', value: '99.9%' },
+        { label: 'Indian IDs', value: '99.9%' },
     ];
 
     return (
@@ -36,7 +37,7 @@ export function StatsShowcase() {
                     </h2>
 
                     <p className="text-muted-foreground md:text-lg max-w-2xl balance mb-8">
-                        Tested across {totalCategories} sensitive data categories. Rigorously validated against {totalTestCases} complex edge-cases including context-aware secrets, false-positives, and embedded fragments.
+                        Tested across {totalCategories}+ sensitive data categories including Indian identifiers (Aadhaar, PAN, IFSC, UPI). Validated against {totalTestCases}+ edge-cases: context-aware secrets, false-positives, embedded credentials, and prompt injection.
                     </p>
 
                     {/* Stats Grid */}

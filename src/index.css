@@ -494,6 +494,26 @@
   .animate-scale-in {
     animation: scale-in 0.2s ease-out forwards;
   }
+
+  /* Gradient shimmer for headline text */
+  .animate-gradient {
+    background-size: 200% auto;
+    animation: gradientShimmer 4s linear infinite;
+  }
+
+  @keyframes gradientShimmer {
+    0%   { background-position: 0% center; }
+    100% { background-position: 200% center; }
+  }
+
+  .animate-fade-in {
+    animation: fadeInUp 0.5s ease-out forwards;
+  }
+
+  @keyframes fadeInUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
 }
 
 .glass-card-subtle {

@@ -1,4 +1,5 @@
-import { Plus, Cpu, Coffee, Settings } from 'lucide-react';
+import { Plus, Cpu, Coffee, Settings, Star } from 'lucide-react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { ConnectedProvider } from '@/lib/glass/aiProviders';
 import { Button } from '@/components/ui/button';
@@ -11,8 +12,25 @@ interface ChatHeaderProps {
   onGoHome?: () => void;
 }
 
+function useGithubStars(repo: string) {
+  const [stars, setStars] = useState<number | null>(null);
+  useEffect(() => {
+    fetch(`https://api.github.com/repos/${repo}`)
+      .then((r) => r.json())
+      .then((d) => setStars(d.stargazers_count ?? null))
+      .catch(() => {});
+  }, [repo]);
+  return stars;
+}
+
+function formatStars(n: number): string {
+  if (n >= 1000) return `${(n / 1000).toFixed(1)}k`;
+  return String(n);
+}
+
 export function ChatHeader({ connectedProviders, onConnectAIClick, onMenuClick, onGoHome }: ChatHeaderProps) {
   const hasConnections = connectedProviders.length > 0;
+  const stars = useGithubStars('AkshaySasi/GlassLM');
 
   return (
     <header className="fixed top-0 left-0 right-0 z-50 glass-surface border-b border-border/30">
@@ -32,24 +50,24 @@ export function ChatHeader({ connectedProviders, onConnectAIClick, onMenuClick, 
                 GLASS LM
               </h1>
             </button>
-            <span className="hidden lg:block text-xs text-muted-foreground font-mono border-l border-border/50 pl-4 truncate">
+            <span className="hidden lg:block text-xs text-muted-foreground font-mono border-l border-border/50 pl-4">
               A Glass-Box Layer For Your AI
             </span>
           </div>
 
           <div className="flex items-center gap-1 md:gap-2 flex-shrink-0">
-            {/* Product Hunt Badge - Subtler styling */}
+            {/* GitHub Stars */}
             <a
-              href="https://www.producthunt.com/products/glasslm?embed=true&utm_source=badge-featured&utm_medium=badge&utm_campaign=badge-glasslm"
+              href="https://github.com/AkshaySasi/GlassLM"
               target="_blank"
               rel="noopener noreferrer"
-              className="hidden md:flex items-center opacity-60 hover:opacity-100 scale-90 hover:scale-100 transition-all duration-300"
+              className="hidden md:flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-primary/25 bg-primary/8 hover:bg-primary/15 hover:border-primary/40 transition-all duration-300 group"
             >
-              <img
-                alt="GlassLM - Product Hunt"
-                src="https://api.producthunt.com/widgets/embed-image/v1/featured.svg?post_id=1059756&theme=light&t=1768032088791"
-                className="h-5 md:h-6"
-              />
+              <Star className="w-3 h-3 text-primary group-hover:fill-primary transition-all duration-300" />
+              <span className="text-xs font-mono text-primary/80 group-hover:text-primary transition-colors">
+                {stars !== null ? formatStars(stars) : '—'}
+              </span>
+              <span className="text-xs text-muted-foreground/60 group-hover:text-muted-foreground transition-colors">stars</span>
             </a>
 
             <Button

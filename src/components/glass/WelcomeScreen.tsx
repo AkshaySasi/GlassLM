@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react';
-import { Eye, Cpu, Lock, HelpCircle, Code2, Users } from 'lucide-react';
+import { Eye, Lock, HelpCircle, Code2, Gauge } from 'lucide-react';
 import { Link } from 'react-router-dom';
 import glasslmLogo from '@/assets/glasslm-logo.webp';
-import { FirstTimeGuide } from './FirstTimeGuide';
 import { StatsShowcase } from './StatsShowcase';
 
 interface WelcomeScreenProps {
@@ -12,166 +11,186 @@ interface WelcomeScreenProps {
 export function WelcomeScreen({ hasProviders }: WelcomeScreenProps) {
     const [activeCard, setActiveCard] = useState(0);
 
-    // Auto-rotate carousel every 3 seconds
     useEffect(() => {
         const interval = setInterval(() => {
             setActiveCard((prev) => (prev + 1) % 3);
-        }, 3000);
-
+        }, 3500);
         return () => clearInterval(interval);
     }, []);
 
     const features = [
         {
             icon: Lock,
-            title: 'Auto-Mask',
-            description: 'Sensitive data is detected and replaced with placeholders automatically'
+            title: 'Auto-Mask PII',
+            description: 'Emails, keys, Aadhaar, SSNs — 35+ types detected and replaced before any AI sees them',
+            accent: 'from-purple-500/20 to-purple-600/10',
+            iconColor: 'text-purple-400',
+        },
+        {
+            icon: Gauge,
+            title: 'Spend Control',
+            description: 'Set token budgets per team. Alert at 80%. Hard-block at limit. No surprise AI bills.',
+            accent: 'from-amber-500/20 to-amber-600/10',
+            iconColor: 'text-amber-400',
         },
         {
             icon: Eye,
-            title: 'Full Transparency',
-            description: 'See exactly what gets masked and what\'s sent to the AI'
+            title: 'Full Visibility',
+            description: 'Every AI call logged with risk score, masked types, and cost — per user, per provider.',
+            accent: 'from-blue-500/20 to-blue-600/10',
+            iconColor: 'text-blue-400',
         },
-        {
-            icon: Cpu,
-            title: 'Your AI',
-            description: 'Bring your own API keys. Stored only in memory, cleared on tab close.'
-        }
     ];
 
     return (
         <>
-            {/* Top Section - Above chat input */}
-            <div className="flex flex-col items-center justify-center min-h-[90vh] md:min-h-[85vh] text-center px-4 py-6">
-                {/* Logo and Heading - Enhanced spacing and typography */}
-                <div className="mb-10 md:mb-12 pt-12 md:pt-0">
-                    <div className="w-24 h-24 md:w-28 md:h-28 mx-auto mb-6 md:mb-8 animate-crystal-float crystal-breathe cursor-pointer">
+            {/* ── Hero section ─────────────────────────────────────────────── */}
+            <section className="relative flex flex-col items-center justify-center min-h-[calc(100svh-64px)] md:min-h-[calc(100vh-80px)] text-center px-5 pt-10 pb-36 md:pb-28 overflow-hidden">
+
+                {/* Background radial glow — purely decorative */}
+                <div className="pointer-events-none absolute inset-0 flex items-center justify-center">
+                    <div className="w-[600px] h-[600px] rounded-full bg-primary/8 blur-[120px] opacity-60" />
+                </div>
+                <div className="pointer-events-none absolute top-1/4 left-1/4 w-[300px] h-[300px] rounded-full bg-purple-600/6 blur-[90px]" />
+                <div className="pointer-events-none absolute bottom-1/4 right-1/4 w-[250px] h-[250px] rounded-full bg-violet-500/6 blur-[90px]" />
+
+                <div className="relative z-10 flex flex-col items-center w-full max-w-2xl mx-auto">
+
+                    {/* Crystal logo */}
+                    <div className="w-20 h-20 md:w-28 md:h-28 mx-auto mb-6 md:mb-8 animate-crystal-float crystal-breathe cursor-pointer drop-shadow-[0_0_32px_rgba(168,85,247,0.35)]">
                         <img
                             src={glasslmLogo}
-                            alt="GlassLM Crystal"
-                            className="w-full h-full object-contain transition-transform duration-500"
+                            alt="GlassLM"
+                            className="w-full h-full object-contain"
                         />
                     </div>
 
-                    <h1 className="text-3xl md:text-5xl font-bold mb-5 md:mb-6 leading-tight">
-                        <span className="text-crystal bg-gradient-to-r from-primary via-purple-400 to-primary bg-clip-text text-transparent animate-gradient">Ask anything.</span>
-                        <br />
-                        <span className="text-muted-foreground text-xl md:text-3xl font-normal">Your sensitive data never reaches the AI.</span>
+                    {/* Headline */}
+                    <h1 className="text-4xl sm:text-5xl md:text-6xl font-bold mb-4 md:mb-5 leading-tight">
+                        <span className="bg-gradient-to-r from-primary via-violet-300 to-primary bg-clip-text text-transparent animate-gradient block">
+                            Ask anything.
+                        </span>
                     </h1>
 
-                    {/* Hide 3-step guide on mobile, show on desktop */}
-                    <div className="hidden md:block">
-                        <FirstTimeGuide />
-                    </div>
+                    {/* Subtitle */}
+                    <p className="text-muted-foreground text-lg md:text-2xl font-normal mb-6 md:mb-8">
+                        Your sensitive data never reaches the AI.
+                    </p>
 
-                    <div className="flex flex-col md:flex-row items-center justify-center gap-4 mt-8 w-full max-w-2xl mx-auto">
-                        <Link
-                            to="/how-it-works"
-                            className="inline-flex items-center gap-1.5 text-sm text-primary hover:text-primary/80 transition-colors font-mono"
-                        >
-                            <HelpCircle className="w-4 h-4" />
-                            See how it works
-                        </Link>
-
+                    {/* Primary CTA */}
+                    <div className="flex items-center justify-center mb-5">
                         <a
                             href="https://microsoftedge.microsoft.com/addons/detail/glasslm-a-glassbox-lay/ggigmidkjafhhcimoecdhebocpobland"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-full bg-primary/10 border border-primary/20 text-primary hover:bg-primary/20 transition-all duration-300 font-mono"
+                            className="inline-flex items-center justify-center gap-2 px-8 py-3.5 rounded-full btn-crystal text-white font-semibold text-sm shadow-lg shadow-primary/30 hover:shadow-primary/50 hover:scale-[1.02] transition-all duration-300"
                         >
-                            <svg className="w-4 h-4" viewBox="0 0 24 24" fill="currentColor">
+                            <svg className="w-4 h-4 flex-shrink-0" viewBox="0 0 24 24" fill="currentColor">
                                 <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-1.07 3.97-2.9 5.4z" />
                             </svg>
-                            Get Edge Extension
+                            Get Extension
                         </a>
+                    </div>
 
+                    {/* Secondary links */}
+                    <div className="flex items-center justify-center gap-4 text-xs">
+                        <Link
+                            to="/how-it-works"
+                            className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors font-mono"
+                        >
+                            <HelpCircle className="w-3 h-3" />
+                            How it works
+                        </Link>
+                        <span className="text-border/50">·</span>
                         <Link
                             to="/developers"
-                            className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-full bg-transparent border border-muted-foreground/30 text-muted-foreground hover:bg-white/5 hover:text-foreground transition-all duration-300 font-mono"
+                            className="inline-flex items-center gap-1.5 text-muted-foreground hover:text-primary transition-colors font-mono"
                         >
-                            <Code2 className="w-4 h-4" />
+                            <Code2 className="w-3 h-3" />
                             For Developers
                         </Link>
-
-                        <a
-                            href="https://app.glasslm.space/signup"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="inline-flex items-center gap-1.5 text-sm px-4 py-2 rounded-full btn-crystal text-white font-mono font-semibold shadow-lg shadow-primary/20"
-                        >
-                            <Users className="w-4 h-4" />
-                            For Teams →
-                        </a>
                     </div>
                 </div>
-            </div>
+            </section>
 
-            {/* Feature Cards Section - Below chat input, requires scroll */}
-            <div className="w-full px-4 py-12 md:py-16">
-                {/* Section Heading */}
-                <h2 className="text-2xl md:text-3xl font-semibold text-center mb-8 md:mb-12 text-crystal font-mono">
-                    What makes GlassLM different...
-                </h2>
+            {/* ── Feature cards ──────────────────────────────────────────────── */}
+            <section className="w-full px-5 py-14 md:py-20">
+                <div className="max-w-3xl mx-auto">
+                    <div className="text-center mb-10 md:mb-12">
+                        <h2 className="text-2xl md:text-3xl font-semibold text-crystal font-mono">
+                            What makes GlassLM different...
+                        </h2>
+                    </div>
 
-                {/* Desktop: Grid layout */}
-                <div className="hidden sm:grid grid-cols-3 gap-4 md:gap-5 max-w-2xl w-full mx-auto mb-8 md:mb-10 px-2">
-                    {features.map((feature, index) => {
-                        const Icon = feature.icon;
-                        return (
-                            <div key={index} className="glass-card rounded-xl md:rounded-2xl p-5 md:p-6 text-left group hover:scale-[1.05] hover:shadow-2xl hover:shadow-primary/20 transition-all duration-300 cursor-pointer">
-                                <Icon className="w-6 h-6 md:w-7 md:h-7 text-primary mb-3 md:mb-4 group-hover:scale-110 group-hover:drop-shadow-[0_0_8px_rgba(147,51,234,0.5)] transition-all duration-300" />
-                                <h3 className="font-medium text-xs md:text-sm mb-1 md:mb-1.5">{feature.title}</h3>
-                                <p className="text-[10px] md:text-xs text-muted-foreground leading-relaxed">
-                                    {feature.description}
-                                </p>
-                            </div>
-                        );
-                    })}
-                </div>
-
-                {/* Mobile: Carousel */}
-                <div className="sm:hidden w-full max-w-sm mx-auto mb-6 relative">
-                    <div className="overflow-hidden">
-                        <div
-                            className="flex transition-transform duration-300 ease-out"
-                            style={{ transform: `translateX(-${activeCard * 100}%)` }}
-                        >
-                            {features.map((feature, index) => {
-                                const Icon = feature.icon;
-                                return (
-                                    <div key={index} className="w-full flex-shrink-0 px-4">
-                                        <div className="glass-card rounded-xl p-5 text-left">
-                                            <Icon className="w-5 h-5 text-primary mb-3" />
-                                            <h3 className="font-medium text-sm mb-2">{feature.title}</h3>
-                                            <p className="text-xs text-muted-foreground leading-relaxed">
-                                                {feature.description}
-                                            </p>
-                                        </div>
+                    {/* Desktop: 3-col grid */}
+                    <div className="hidden sm:grid grid-cols-3 gap-4 md:gap-5">
+                        {features.map((feature, index) => {
+                            const Icon = feature.icon;
+                            return (
+                                <div
+                                    key={index}
+                                    className={`relative rounded-2xl p-5 md:p-6 text-left overflow-hidden group hover:scale-[1.03] hover:shadow-2xl hover:shadow-primary/15 transition-all duration-300 border border-border/40 hover:border-primary/30 bg-gradient-to-br ${feature.accent} backdrop-blur-sm`}
+                                    style={{ background: 'hsl(260 25% 10% / 0.8)' }}
+                                >
+                                    <div className={`w-9 h-9 rounded-xl bg-card/60 border border-border/40 flex items-center justify-center mb-4 group-hover:scale-110 transition-transform duration-300`}>
+                                        <Icon className={`w-4 h-4 ${feature.iconColor}`} />
                                     </div>
-                                );
-                            })}
+                                    <h3 className="font-semibold text-sm md:text-base mb-2 text-foreground">{feature.title}</h3>
+                                    <p className="text-xs md:text-sm text-muted-foreground leading-relaxed">
+                                        {feature.description}
+                                    </p>
+                                </div>
+                            );
+                        })}
+                    </div>
+
+                    {/* Mobile: carousel */}
+                    <div className="sm:hidden">
+                        <div className="overflow-hidden rounded-2xl">
+                            <div
+                                className="flex transition-transform duration-400 ease-out"
+                                style={{ transform: `translateX(-${activeCard * 100}%)` }}
+                            >
+                                {features.map((feature, index) => {
+                                    const Icon = feature.icon;
+                                    return (
+                                        <div key={index} className="w-full flex-shrink-0 p-1">
+                                            <div className="rounded-2xl p-6 text-left border border-border/40 bg-card/80">
+                                                <div className={`w-9 h-9 rounded-xl bg-background/60 border border-border/40 flex items-center justify-center mb-4`}>
+                                                    <Icon className={`w-4 h-4 ${feature.iconColor}`} />
+                                                </div>
+                                                <h3 className="font-semibold text-base mb-2">{feature.title}</h3>
+                                                <p className="text-sm text-muted-foreground leading-relaxed">
+                                                    {feature.description}
+                                                </p>
+                                            </div>
+                                        </div>
+                                    );
+                                })}
+                            </div>
+                        </div>
+
+                        {/* Dot indicators */}
+                        <div className="flex justify-center gap-2 mt-4">
+                            {features.map((_, index) => (
+                                <button
+                                    key={index}
+                                    onClick={() => setActiveCard(index)}
+                                    className={`h-1.5 rounded-full transition-all duration-300 ${
+                                        index === activeCard ? 'bg-primary w-6' : 'bg-primary/30 w-1.5'
+                                    }`}
+                                    aria-label={`Feature ${index + 1}`}
+                                />
+                            ))}
                         </div>
                     </div>
-
-                    {/* Dots indicator */}
-                    <div className="flex justify-center gap-2 mt-4">
-                        {features.map((_, index) => (
-                            <button
-                                key={index}
-                                onClick={() => setActiveCard(index)}
-                                className={`w-2 h-2 rounded-full transition-all duration-300 ${index === activeCard ? 'bg-primary w-6' : 'bg-primary/30'
-                                    }`}
-                                aria-label={`Go to feature ${index + 1}`}
-                            />
-                        ))}
-                    </div>
                 </div>
-            </div>
+            </section>
 
-            {/* Verification Stats Section - Full Width */}
-            <div className="w-full py-8 md:py-12 pb-32 md:pb-48">
+            {/* ── Stats section ──────────────────────────────────────────────── */}
+            <section className="w-full pb-32 md:pb-48">
                 <StatsShowcase />
-            </div>
+            </section>
         </>
     );
 }

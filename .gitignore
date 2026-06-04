@@ -26,6 +26,16 @@ dist-ssr
 # Backend lives in a separate private repo
 backend/
 
+# Dashboard lives in a separate private repo
+dashboard/
+
+# GlassLM 2.0 team/enterprise files — kept in private repo only
+src/extension/auth.ts
+src/extension/eventReporter.ts
+src/extension/policyEngine.ts
+src/extension/managed_schema.json
+sdk/node/src/gateway.ts
+
 # Environment variables — NEVER commit real .env files
 .env
 .env.*
